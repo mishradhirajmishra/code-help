@@ -1,0 +1,18 @@
+const EventEmiter = require('events');
+
+class Person extends EventEmiter{
+  constructor(name){
+    super();
+   this._name = name;
+  }
+  get name(){
+    return this._name;
+  }
+}
+ 
+const ramesh = new Person('Ramesh');
+
+ramesh.on('name',()=>{
+  console.log('my name is '+ ramesh.name);
+})
+ramesh.emit('name');

@@ -1,0 +1,299 @@
+npm install -g @angular/cli
+ng new my-app
+cd my-app
+ng serve --open
+ng generate component heroes
+-----------------------------------------------------------------------------------------------------
+Interpolation
+Public name = ‘ abc’                                       {{ name }}
+Asign window Property             
+ public siteUrl = window.location.href;             {{siteUrl}}
+Class  Binding 
+public redClass = 'red it bg';
+<h2 [class]="redClass"> red color</h2>
+<div [class.first]="true">test</div>
+=====================================================================
+ public chkbool = false;
+<h2 [class.it]="chkbool"> itelic style</h2>
+=====================================================================
+ public msg = {
+   'red' : true,
+   'it' : true,
+   'bg' : false
+ };
+<h2 [ngClass]="msg"> green background</h2>
+====================================================================
+<div [ngClass]="{'first second':true, 'third':false}">test</div>
+<div [ngClass]="'first second'">test</div>
+<div [ngClass]="['first','second']">test</div>
+
+
+====================================================================
+Style Binding  
+ public blue = 'blue';
+<h2 [style.color]="blue"> blue color </h2>
+====================================================================
+<h2 [style.color]=" false ? 'red' : 'green'"> green bacground</h2>
+====================================================================
+ public titleStyle  = {
+   'color' : 'yellow',
+   'fontSize' : '50px',
+ };
+<h2 [ngStyle]="tytleStyle"> green bacground</h2>
+color=true;
+<div [ngStyle]="{'color':color ? 'red' : 'green' }">test</div>
+ color():string{    return 'true';  }
+<div [ngStyle]="{'color':color() ? 'red' : 'green' }">test</div>
+
+====================================================================
+Click event
+ public onClick() {  console.log('test click'); }
+<button (click)="onClick()">Click </button>
+====================================================================
+
+ public onClick() { this.messsage = 'test interpolation'; }
+<button (click)="onClick()">Click </button>
+====================================================================
+<button (click)="messsage='greeting again'">Click </button>
+====================================================================
+ public onClick(event) {  console.log(event); }
+<button (click)="onClick($event)">Click </button>
+====================================================================
+Refrence Variable
+ public refrancevar(value) {  console.log(value); }
+<input #myvar type='text'>
+<button (click)="refrancevar(myvar.value)">Click </button>
+====================================================================
+Form Import   (app.module.ts)
+import { FormsModule } from '@angular/forms';
+imports: [ BrowserModule,FormsModule ]
+====================================================================
+ Send data from parent to child component
+ App.compnent.ts
+name = 'this is parent data';
+App.component.html
+<app-test [parrentData]="name"></app-test>
+Test.compnent.ts
+import { Component, OnInit ,Input,Output,EventEmitter } from '@angular/core';
+export class TestComponent implements OnInit {
+ @Input('parrentData') public name;
+}
+Test.component.html
+<p>{{name}}</p>
+====================================================================
+ Send data from child  to parrent component
+ App.compnent.ts
+public message='';
+App.component.html
+{{message}}
+<app-test (childEvent)="message=$event"></app-test>
+Test.compnent.ts
+import { Component, OnInit ,Input,Output,EventEmitter } from '@angular/core';
+export class TestComponent implements OnInit {
+ @Output() public childEvent = new EventEmitter();
+    sendToParent(){
+     this.childEvent.emit("hi this is child");
+   }
+}
+Test.component.html
+<button (click)="sendToParent()">click Here</button>
+====================================================================
+Two Way binding
+public name = 'Dhiraj Kumar Mishra';
+<input [(ngModel)]='name' type='text'>
+{{name}}
+<input [value]="test" (input)="test=$event.target.value">
+{{test}}
+<input type="text" [(ngModel)]="test">
+{{test}}
+
+Property and atribute binding
+<img [src]="src" [attr.width]="size">
+<td [attr.colspan]=”num”>
+
+====================================================================
+Structure Didective 
+<h2 *ngIf="display">Test </h2>
+ public display = true;
+<h2 *ngIf="display">Test </h2>
+====================================================================
+<h2 *ngIf="false; else elseBlock">Test if </h2>
+<ng-template #elseBlock>
+ <h2>Test else</h2>
+</ng-template>
+====================================================================
+<div *ngIf="true; then thenBlock; else elseBlock"></div>
+<ng-template #thenBlock>
+ <h2>Then Block</h2>
+</ng-template>
+<ng-template #elseBlock>
+ <h2>else Block</h2>
+</ng-template>
+
+====================================================================
+
+Currency Pipe
+<h1>{{123.123 |currency : 'USD'}}</h1>
+<h1>{{123.123 |currency : 'rup' | lowercase}}</h1>
+<h1>{{123.123 |currency : 'CAD' | lowercase}}</h1>
+---------------------------------
+ a: number = 0.259;
+ b: number = 1.3495;
+   <!--output '$0.26'-->          <p>A: {{a | currency}}</p>
+   <!--output 'CA$0.26'-->      <p>A: {{a | currency:'CAD'}}</p>
+   <!--output 'CAD0.26'-->          <p>A: {{a | currency:'CAD':'code'}}</p>
+   <!--output 'CA$0,001.35'-->   <p>B: {{b | currency:'CAD':'symbol':'4.2-2'}}</p>
+ <!--output '$0,001.35'-->   <p>B: {{b | currency:'CAD':'symbol-narrow':'4.2-2'}}</p>
+   <!--output '0 001,35 CA$'-->   <p>B: {{b | currency:'CAD':'symbol':'4.2-2':'fr'}}</p>
+   <!--output 'CLP1' because CLP has no cents-->   <p>B: {{b | currency:'CLP'}}</p>
+<p>{{'1.236' |currency :'INR'}}</p>
+
+====================================================================
+Date Pipe
+<p>{{date1}}</p>      Wed Mar 25 2015 05:30:00 GMT+0530 (India Standard Time)
+<p>{{date1| date: 'shortDate' }} </p>       3/25/15
+<p>{{date1| date: 'mediumDate' }}</p>       Mar 25, 2015
+<p>{{date1| date: 'longDate' }}</p>         March 25, 2015
+<p>{{date1| date: 'fullDate' }}</p>         Wednesday, March 25, 2015
+<p>{{date1| date: 'shortTime' }}</p>        5:30 AM
+<p>{{date1| date: 'mediumTime' }}</p>       5:30:00 AM
+<p>{{date1| date: 'longTime' }}</p>         5:30:00 AM GMT+5
+<p>{{date1| date: 'fullTime' }}</p>         5:30:00 AM GMT+05:30
+<p>{{date1| date: 'short' }}</p>            3/25/15, 5:30 AM
+<p>{{date1| date: 'long' }}</p>             March 25, 2015 at 5:30:00 AM GMT+5
+<p>{{date1| date: 'full' }}</p>             Wednesday, March 25, 2015 at 5:30:00 AM GMT+05:30
+<p>{{date1| date: 'd/m/y h:m:s:SS a EEEE GGGG' }}</p>         25/30/2015 5:30:0:AM Wednesday Anno Domini
+
+=>  ww-week of year        W week of month
+
+====================================================================
+Json Pipe
+js123:any[]=[{'name':'dhiraj'},{'name':'dhiraj'},{'name':'dhiraj'}]
+{{js123 | json}}
+Case Pipe
+   <p>{{ 'asim' | uppercase }}</p>
+       <p>{{ 'Asim' | lowercase }}</p>
+           <p>{{ 'asim' | titlecase }}</p>
+Percent Pipe
+   <p>{{ '1.123000' | percent }}</p>                  112%    
+   <p>{{ '1.12301' | percent :'2.1-3' }}</p>         112.301%
+Slice Pipe
+   <p>{{[1,2,3,4,5,6] |slice :1}}</p>    2,3,4,5,6
+   <p>{{[1,2,3,4,5,6] |slice :1:4}}</p>  2,3,4
+
+====================================================================
+Static routing
+ <a [routerLink]="[ '/student']">Student</a>
+ <a [routerLink]="[ '/studentdetail']">Studentdetail</a>
+const routes: Routes = [
+ {path:'', redirectTo:'student',pathMatch:'full'},
+ {path:'student',component:StudentComponent},
+ {path:'studentdetail',component:StudentdetailComponent},
+ {path:'**',component:PagenotfoundComponent}
+];
+Dynamic routing
+const routes: Routes = [
+ {path:'student',component:StudentComponent}
+};
+export class AppComponent {
+ constructor(private router:Router){}
+ student(){
+   this.router.navigate(['/student'])
+ }
+}
+<a (click)="student()"> Dynamic</a>
+childern routing
+const routes: Routes = [
+ {path:'', redirectTo:'student',pathMatch:'full'},
+ {path:'student',
+ children:[
+   {path:'',component:StudentComponent},
+   {path:'studentdetail',component:StudentdetailComponent}
+ ]
+},
+ {path:'**',component:PagenotfoundComponent}
+];
+<a [routerLink]="[ './studentdetail']">Studentdetail</a>    //student.component.html
+<div class="navbar">                                app.component.html
+ <a [routerLink]="[ '/student']">Student</a>
+ <a [routerLink]="[ '/page']">Parentdetail</a>
+ <a (click)="student()"> Dynamic</a>
+</div>
+
+<div class="main">
+ <router-outlet></router-outlet>
+</div>
+
+====================================================================
+Servise
+export class MyserviceService {
+ constructor() {}
+   display(){
+     return 'firs servics';
+   }
+}
+----------------------------
+export class AppComponent {
+ title2 = '';
+ constructor(private router:Router,private _newservise:MyserviceService){ }
+   ngOnInit(){
+     this.title2 =this._newservise.display();         
+  }
+ student(){
+   this.router.navigate(['/student'])
+ }
+}
+----------------------------
+------------------------------------------------------------------------
+ //create project with routing 
+ ng new customer-app --routing
+
+//trackby 
+array = [
+    { "id": 1, "name": "bill" },
+    { "id": 2, "name": "bob" },
+    { "id": 3, "name": "billy" }
+ ];
+ foo() {
+  this.array = [
+     { "id": 1, "name": "foo" },
+     { "id": 2, "name": "bob" },
+     { "id": 3, "name": "billy" },
+     { "id": 4, "name": "cilly" }
+  ]
+}
+identify(index, item) {
+  return item.id;
+}
+<div *ngFor="let e of array;trackBy: identify">
+    {{e.id}} - {{e.name}}
+ </div>
+ <button (click)="foo()">foo</button>
+ 
+ 
+ ----------------------------------------------------------------------------
+ // sendin data from parent to child
+   ------------parent-------------
+   parentdata:String='data for child';
+   <app-child [childvar]="parentdata" ></app-child>
+  -----------child ---------------
+  @Input() childvar;
+ ------------------------------------------------------------------------------
+  // sendin data from child to Parent
+    ------------parent-------------
+    reciveData:String;
+   (valueChange)="reciveData=$event"
+    ------------child ---------------
+   @Output() valueChange = new EventEmitter();  
+   change(){   this.valueChange.emit("dhiraj mishra");  }
+   
+
+
+
+
+
+
+
+
+
+

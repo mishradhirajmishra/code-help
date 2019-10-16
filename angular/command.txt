@@ -1,0 +1,9 @@
+// add ng bootstrap to angular
+  ng add @ng-bootstrap/schematics
+  ng new angular-project --enable-ivy
+  ng generate module customers --route customer-list --module app.module  
+  
+  
+ 
+
+ 
