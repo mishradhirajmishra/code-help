@@ -1,0 +1,18 @@
+> npm i firebase angularfire2
+............................................
+export const environment = {
+  production: false,
+  firebase:{
+    apiKey: "AIzaSyA3r-2bPGjKhDTFRY9CYUw3He6Y7XDnWuc",
+    authDomain: "firbase-angular-b4716.firebaseapp.com",
+    databaseURL: "https://firbase-angular-b4716.firebaseio.com",
+    projectId: "firbase-angular-b4716",
+    storageBucket: "firbase-angular-b4716.appspot.com",
+    messagingSenderId: "971157469441",
+    appId: "1:971157469441:web:a9bc1e7319416f5bd34300",
+    measurementId: "G-Y53NL96E50"
+  }
+};
+.................................................
+
+

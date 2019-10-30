@@ -1,0 +1,77 @@
+import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
+
+
+declare var paypal;
+@Component({
+  selector: 'app-paypall',
+  templateUrl: './paypall.component.html',
+  styleUrls: ['./paypall.component.scss']
+})
+
+export class PaypallComponent implements OnInit {
+  title:String='Paypal';
+  @ViewChild('paypal', { static: true }) paypalElement: ElementRef;
+
+  product = {
+    price: 777.77,
+    description: 'used couch, decent condition',
+    img: 'assets/couch.jpg'
+  };
+
+  paidFor = false;
+
+  ngOnInit() {
+    paypal
+      .Buttons({
+        createOrder: (data, actions) => {
+          return actions.order.create({
+            purchase_units: [
+              {
+                unit:3,
+                warrenty: '3 year',
+                description: this.product.description,
+                amount: {
+                  // currency_code: 'USD',
+                  value: this.product.price
+                }
+              }
+            ]
+          });
+        },
+        onApprove: async (data, actions) => {
+          const order = await actions.order.capture();
+          this.paidFor = true;
+          console.log(order);
+        },
+        onError: err => {
+          console.log(err);
+        }
+      })
+      .render(this.paypalElement.nativeElement);
+  }
+}
+=============================================================================
+        <mat-card>
+                <div *ngIf="!paidFor">
+
+                        <h1>Buy this Couch - ${{ product.price }} OBO</h1>
+                      
+                        <p>{{ product.description }}</p>
+                      
+                      
+                      </div>
+                      
+                      <div *ngIf=paidFor>
+                        <h1>Yay, you bought a sweet couch!</h1>
+                      
+            
+                      </div>
+                      
+                      
+                      <div [hidden]="paidFor" #paypal></div>            
+                    
+        </mat-card>
+========================================================
+index.html
+  <script src="https://www.paypal.com/sdk/js?client-id=Aee442QQzWSa6J8raTKp5cWJupP6k0tVWq4AandIeirdprUmLmFGsOCvcYyKLl82z0zPccsxp0iv6-jC&currency=INR"></script>
+</head>

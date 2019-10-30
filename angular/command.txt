@@ -3,6 +3,9 @@
   ng new angular-project --enable-ivy
   ng generate module customers --route customer-list --module app.module  
   
+
+npm install http-server -g
+http-server dist/.
   
  
 

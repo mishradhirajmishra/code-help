@@ -1,0 +1,25 @@
+/* include in style file */
+
+
+@import '~@angular/material/theming';
+@include mat-core();
+
+$my-theme-primary: mat-palette($mat-cyan);
+$my-theme-accent: mat-palette($mat-pink);
+$my-theme-warn: mat-palette($mat-red);
+
+$theme: mat-light-theme($my-theme-primary, $my-theme-accent, $my-theme-warn);
+// ==========================================
+$my-second-theme-primary: mat-palette($mat-cyan);
+$my-second-theme-accent: mat-palette($mat-pink);
+$my-second-theme-warn: mat-palette($mat-red);
+
+$theme-second: mat-dark-theme($my-second-theme-primary, $my-second-theme-accent, $my-second-theme-warn);
+
+.my-theme{
+    @include angular-material-theme($theme);
+}
+
+.my-second-theme {   
+@include angular-material-theme($theme-second);
+  }

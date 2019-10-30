@@ -1,0 +1,32 @@
+// in singel component (snackbar in same component )
+====================================================
+import { Component, OnInit } from '@angular/core';
+import {MatSnackBar} from '@angular/material/snack-bar';
+
+@Component({
+  selector: 'app-forms',
+  templateUrl: './forms.component.html',
+  styleUrls: ['./forms.component.scss'],
+
+})
+export class FormsComponent implements OnInit {
+  title:string = 'Matrial'
+  constructor(private _snackBar: MatSnackBar) {}
+
+  openSnackBar(message: string, action: string) {
+    this._snackBar.open(message, action, {
+      duration: 105000,
+    }).afterDismissed().subscribe(data =>console.log(data))
+  }
+  ngOnInit(){}
+}
+...........................................................
+<button mat-button (click)="openSnackBar('you have deleted successfully', 'undo')">Show snack-bar</button>
+..............................................................
+ ::ng-deep span.mat-button-wrapper {
+    color:  $mat-warn-main !important;
+}
+..............................................................
+==============================================================================
+// in singel component (snackbar in seprate component component )
+=============================================================================
