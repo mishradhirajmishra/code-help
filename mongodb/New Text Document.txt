@@ -85,7 +85,13 @@ create bacup
 
 
 
+//=============================== queries
 
+Animal.find().where('pets').all(['cat','dog','fox'])  // select matching from array
+
+
+
+db.test.aggregate([{$group : {_id : '$title' , 'total_count' : {$sum : 1}}}])         //  group by count
 
 
 
