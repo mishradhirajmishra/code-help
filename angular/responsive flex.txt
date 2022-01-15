@@ -1,0 +1,40 @@
+<div class="outer">
+  <div class="container" fxLayout="row" fxLayout.xs="column" fxLayoutGap='8px'>
+    <mat-card fxFlex="auto" class="red" fxLayoutAlign="space-around center" ><h1>Header</h1> </mat-card>
+  </div>
+  <div class="container" fxLayout="row" fxLayout.xs="column" fxLayoutGap='8px'>
+    <mat-card fxFlex="auto" class="red"> Red</mat-card>
+    <mat-card fxFlex.sm="25%" fxFlex="80%" fxFlex.xs="auto" class="green"> Green</mat-card>
+    <mat-card fxFlex.sm="25%" fxHide.xs  fxHide.md  fxHide.lg  class="yellow">only sm screen</mat-card>
+    <mat-card fxFlex="auto" class="pink">Pink</mat-card>
+  </div>
+  <div class="container" fxLayout="row" fxLayout.xs="column" fxLayoutGap='8px'>
+    <mat-card fxFlex="auto" class="pink">Footer</mat-card>
+  </div>
+</div>
+
+=========================================================================================
+.outer{
+    border: 1px solid gray;
+}
+.container{   
+padding: 4px;
+}
+.red{
+    background-color: red;
+    height: 100px;
+   
+}
+.green{
+    background-color: green;
+    height: 100px;
+}
+.yellow{
+    background-color: yellow;
+    height: 100px;
+}
+.pink{
+    background-color: pink;
+    height: 100px;
+}
+// ======================

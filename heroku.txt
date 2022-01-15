@@ -1,0 +1,22 @@
+make sure login with gethub from cli
+
+(must sullected master branch)
+prockfile  with web: node ./bin/www
+heroku login
+
+heroku git:clone -a islamic-qna
+
+git init
+
+git add .
+git add -A
+git commit -am "make it better"
+git push heroku master
+
+heroku logs --tail
+
+to make change
+
+git add -A
+git commit -am "make it better"
+git push heroku master

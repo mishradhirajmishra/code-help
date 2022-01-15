@@ -1,0 +1,46 @@
+
+sudo apt update
+sudo apt install nginx
+
+sudo ufw app list
+sudo ufw allow 'Nginx HTTP'
+
+sudo ufw status
+
+--------------------------------
+  Nginx Full
+  Nginx HTTP
+  Nginx HTTPS
+  OpenSSH
+
+// allow required 
+----------------------------------
+ 
+sudo ufw allow 'Nginx Full'
+sudo ufw allow HTTP
+sudo ufw allow OpenSSH
+
+sudo ufw enable
+
+sudo ufw disable
+
+ssh dk@192.168.0.101
+pass :123
+ sudo -i  change user to superuser
+
+https://gist.github.com/bradtraversy/cd90d1ed3c462fe3bddd11bf8953a896
+
+mv index.js node
+rm index.js
+
+git clone 
+https://github.com/mishradhirajmishra/exp.git
+
+
+open file by vim filename.extenson
+save by exp :wq
+npm install -g pm 2
+pm2 start ./bin/www
+
+sudo apt instal mongodb
+sudo systemctl status mongodb

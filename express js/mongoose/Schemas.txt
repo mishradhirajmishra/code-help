@@ -1,0 +1,74 @@
+/* shop model*/
+const mongoose = require('mongoose');
+ 
+const shopSchema = mongoose.Schema({
+  user_id: { type: mongoose.Schema.Types.ObjectId, ref: "User", unique: true },
+    comments: [{ body: String, date: Date }],
+    date: { type: Date, default: Date.now },
+    logo: { type: String, default: 'shop_logo.png' },
+	showCustomOfferText: { type: Boolean ,default:false},
+    customOfferText:[],
+   views: [{ user_id: { type: String }, date: { type: String } }],
+   shopRating: {
+	   type: Number 
+	   min: [6, 'Too few shopRating'],   //  Too few shopRating custum errors not it is array ([]) display with invalid range
+	                                          it can be ''Must be at least 6, got {VALUE}''
+       max: 12
+	},
+  bacon: {
+    type: Number,
+    required: [true, 'Why no bacon?']
+  },
+  drink: {
+    type: String,
+    enum: ['Coffee', 'Tea'],
+    required: function() {  return this.bacon > 3; } // bacon required if bacon >3
+   },
+   
+   
+   Id: mongoose.ObjectIds ,
+   Data: Buffer, //Buffer
+   others : Schema.Types.Mixed, //Mixed
+   supervisorOf : { type: map    of:  String }  ,
+   
+   geolocation: {
+    type: { type: String },
+    coordinates: [],
+  },
+    test: {
+    type: String,
+    lowercase: true ,// Always convert `test` to lowercase
+	 required: true
+  },
+    drink: {
+    type: String,
+    enum: ['Coffee', 'Tea'],
+	}
+  name: { first: String, last: String }
+  
+  tags: { type: [String], index: true } // field level
+  
+},
+  { timestamps: true }
+); 
+
+ .set('toObject', { virtuals: true });
+
+ .set('toJSON', { virtuals: true });
+
+.virtual('fullName').get(function() {
+  return this.name.first + ' ' + this.name.last;
+});
+
+// noe access  as fullName insted of first & last
+
+
+
+shopSchema.index({ name: 1, type: -1 }); // schema level
+shopSchema.index({ geolocation: '2dsphere' })
+module.exports.Shop = mongoose.model("Shop", shopSchema);
+
+ 
+
+  // create mongoose.Types.ObjectId using string id
+  var id = mongoose.Types.ObjectId(req.body.review.shop_id);

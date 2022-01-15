@@ -1,0 +1,63 @@
+git config --global user.name "mishradhirajmishra"
+git config --global user.email "dhiraj.siswa.mishra@gmail.com"
+git config --list
+
+
+git init
+git add -A
+git status
+git commit -m "first commitment "
+git remote add origin https://github.com/mishradhirajmishra/codeigniter_code_help.git
+git push -u origin master
+dhiraj.siswa.mishra@gmail.com/dhikrish123 
+
+// clonning
+git clone git://github.com/schacon/grit.git
+
+// pulling
+git pull origin master
+
+ git log   // show commit history
+
+//--------------------branch----------------------
+git branch                     // list branch
+git branch <branch name>
+git checkout <branch name>
+git checkout -b <branch name>     // create and switch branch
+git branch -d <branch name>    // delete branch
+git branch -m <branch name>    // rename branch within same branch
+
+git branch -a              // list branch
+
+
+//------------------------ merge --------------------
+  git merge <branch name to be merged> // within reciving branch (may be master)
+  // if conflict while merging
+  git mergetool -t vimdiff  // open new file and  , press insert ,change , shift + :
+  wq
+  
+  list file by ls command and remove .orig file manualy
+ 
+  git commit -m"merged"
+
+  git rebase <branch name > // transfer all commit of branch 
+-------------------------------------------------------------------
+git log
+ git log --graph --online 
+git log --graph --oneline --pretty
+
+
+
+
+
+
+
+
+
+
+
+1462
+
+https://bitbucket.org/whoisamitsingh/atwk-angular/src/firebase-2/
+
+https://github.com/joshnh/Git-Commands

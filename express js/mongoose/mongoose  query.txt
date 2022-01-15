@@ -1,0 +1,71 @@
+ 
+
+-------------------------------------------------------------
+       const agrev = await Review.aggregate([{ $match: { shop_id: id } }, { $group: { _id: '$shop_id', rating: { $avg: "$rating" } } }]);
+        Shop.findByIdAndUpdate(req.body.review.shop_id, { shopRating: agrev[0].rating }).then((res) => { })
+-------------------------------------------------------------------
+.populate("shop_id","_id shopName shop_id slug x_slug location refrelId  refrelUsed refrelStatus createdAt")
+.populate("refrelIds","_id shopName shop_id slug x_slug location refrelId  refrelUsed refrelStatus createdAt")
+.populate({ 
+      path: 'pages',
+      populate: [{
+       path: 'components',
+       model: 'Component'
+      },{
+        path: 'AnotherRef',
+        model: 'AnotherRef',
+        select: 'firstname lastname'
+      }] 
+   })
+..................
+
+   Model.find({ refrelId: req.params.id },{ _id:1, refrelUsed:1}).then((r) => {  res.send(r) }).catch((e) => { res.send(e) })
+   referral = new Model(req.body)
+   referral.save().then((r) => {  res.send(r) }).catch((e) => { res.send(e) })
+
+   Model.findByIdAndUpdate({ _id: req.params.id }, req.body.data).then((r) => {  res.send(r) }).catch((e) => { res.send(e) })
+
+   Model.updateOne({ _id: req.params.notification_id }, { hide: true })
+
+   Model.deleteOne({ _id: req.params.id })
+
+   Model.insertMany(req.body.notification)
+  
+   Model.findById(req.params.id)
+        .count({ shop_id: req.params.shop_id, status: true })
+
+------------------------------------------------------------------------------
+// promise calling meny independent query
+  module.exports.getAllitemCountAdmin = async (req, res, next) => {
+  let result = { user: Number, shop: Number }
+  let search = {};     
+
+  const shop_count = (sear) => {
+    return new Promise((resolve, reject) => {
+      Shop.countDocuments(sear).then((r) => { result.shop = r; resolve(result); }).catch((e) => { console.log(e) })
+    })
+  }
+
+  const user_count = (sear) => {
+    return new Promise((resolve, reject) => {
+      sear.role = "user"; sear.isverified = true;  delete(sear.published)
+      User.countDocuments(sear).then((r) => { result.user = r; resolve(result); }).catch((e) => { console.log(e) })
+    })
+  }
+ 
+  Promise.all([await shop_count(search), await user_count(search)]).then(() => { res.send(result);});
+
+}
+---------------------------------------------------------------------------------------
+const https = require('https');
+  var ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress; 
+  https.get('https://api.ipstack.com/' + ip + '?access_key=00c6bf8e1eae9c0bb48a4ba33247d9af&format=1', (resp) => {
+    let data = '';
+    resp.on('data', (chunk) => { data += chunk; });
+    resp.on('end', () => {  res.send(JSON.parse(data)) });
+  }).on("error", (err) => { });
+
+---------------------------------------------------------------------------------------
+
+
+

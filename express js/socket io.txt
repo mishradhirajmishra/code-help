@@ -1,0 +1,300 @@
+ npm i socket.io
+
+-------------------------------------------------
+
+const io = socket(server, { cors: { origin: '*' } });
+
+io.on('connection', (socket) => {
+  // ================== chat arround ==========================
+  let all_dis_socketId=[];
+  socket.on('disconnect',async function () {
+    all_dis_socketId.push(socket.id)
+    // console.log("--------------------- "+socket.id)
+    let dis_socketId = socket.id;
+    let search = { socketId: { $in: socket.id } };
+   await  User.find(search, { socketId: 1 })
+      .then((user) => {
+        if (user && user[0] && user[0].socketId) {
+          let rem_socketId = user[0].socketId.filter(x => (x != dis_socketId))
+          if (rem_socketId.length == 0) {
+              User.findByIdAndUpdate(user[0]._id, { onlineStatus: "Offline", socketId: [] }, { new: true }).then((res_user) => {
+              io.sockets.emit("onlineMessageSeller", { user_id: user[0]._id, status: 'Offline' });
+            }).catch((e) => { console.log(e) });
+          } else {
+            User.findByIdAndUpdate(user[0]._id, { socketId: rem_socketId }, { new: true }).then((res_user) => {
+            }).catch((e) => { console.log(e) });
+          }
+        }
+      })
+      .catch((e) => { console.log(e) })
+  });
+
+  socket.on('joinChatroom', (data) => {
+
+    socket.join(data.room_id);
+    socket.broadcast.to(data.room_id).emit("joinMessage", data);
+  });
+  socket.on('leaveChatroom', (data) => {
+    socket.leave(data.room_id);
+    socket.broadcast.to(data.room_id).emit("leaveMessage", data);
+  });
+  socket.on('sendMessage', (data) => {
+    User.findById({ _id: data.user_id })
+      .then((user) => {
+        if (user && user.status && user.loginStatus) {
+          const chat = new Chat(data);
+          chat.save().then((result) => { io.in(data.room_id).emit("reciveMessage", result); }).catch(err => { console.log(err) })
+        } else {
+          io.in(data.room_id).emit("unautharised", true);    
+        }
+      })
+      .catch((err) => { console.log(err) })
+
+  })
+
+  // =======================================================
+  //                    chat seller 
+  // ======================================================= 
+
+  socket.on('readMessage', (data) => {
+    Chatseller.updateMany({ user_id: data.user_id, room_id: data.room_id }, { read: true }).then((result) => {
+      Chatsellerlatest.findOneAndUpdate({ room_id: data.room_id }, { room_id: data.room_id, r_user_id: data.user_id }, { new: true }).then((result) => {
+        socket.broadcast.to(data.room_id).emit("recivereadMessage", data);
+      }).catch(err => { console.log(err) });
+    }).catch((e) => { console.log(e) });
+  })
+
+  socket.on('typingMessage', (data) => {
+    socket.broadcast.to(data.room_id).emit('reciveTypingMessage', data);
+  })
+
+  socket.on('onlineSeller', (data) => {
+    if (data.status == "Offline") {
+      User.findByIdAndUpdate(data.user_id, { onlineStatus: data.status, socketId: [] }, { new: true }).then((user) => {
+        io.sockets.emit("onlineMessageSeller", data);
+      }).catch((e) => { console.log(e) });
+    } else {
+      User.findByIdAndUpdate(data.user_id, { onlineStatus: data.status, $addToSet: { socketId: socket.id } }, { new: true }).then((user) => {
+        io.sockets.emit("onlineMessageSeller", data);
+      }).catch((e) => { console.log(e) });
+    }
+  });
+
+  socket.on('joinChatroomSeller', (data) => {
+    socket.join(data.room_id);
+    // socket.broadcast.to(data.room_id).emit("joinMessageSeller", data);
+  });
+
+  socket.on('leaveChatroomSeller', (data) => {
+    socket.leave(data.room_id);
+    // socket.broadcast.to(data.room_id).emit("leaveMessageSeller", data);
+  });
+
+  socket.on('blockSellerRoom', (data) => {
+    Roomseller.findByIdAndUpdate({ _id: data.room_id }, data.data, { returnOriginal: false }).then((room) => {
+      io.in(data.room_id).emit("reciveMessageRoomBlock", room);
+    }).catch((e) => { console.log(e) });
+  });
+
+  socket.on('sendMessageSeller', (data) => {
+    // Roomseller.findById(data.chatMessage.room_id).then((room) => {
+    //   if(room && room.active){
+    const chatseller = new Chatseller(data.chatMessage);
+    chatseller.save().then((result) => {
+      let title = "";
+      if (data.chatMessageLatest.role == 'seller') { title = data.chatMessageLatest.shopName } else { title = data.chatMessageLatest.fullName }
+      PushNotification.byUserId('CHAT', data.chatMessageLatest.s_user_id, title, data.chatMessageLatest.text, '');
+      io.in(data.chatMessage.room_id).emit("reciveMessageSeller", result);
+      Chatsellerlatest.findOneAndUpdate({ room_id: data.chatMessageLatest.room_id }, data.chatMessageLatest, { new: true }).then((result) => {
+        io.sockets.emit("reciveMessageSellerLatest", result);
+      }).catch(err => { console.log(err) })
+    }).catch(err => { console.log(err) })
+
+  })
+
+
+})
+
+
+server.listen(port, () => {
+  console.log("server is listning on port " + port)
+})
+----------------------------------------------------------------------------------------
+
+
+npm i socket.io-client
+=====================
+
+service module
+
+import { io } from "socket.io-client";
+
+
+ socket=io(environment.chatUrl, {transports: ['polling']}) ;
+
+
+
+  joinChatroom(room){
+    return this.socket.emit('joinChatroom', room);
+  }
+  joinMessage() {
+    let observable = new Observable<any>((observer) => {
+      this.socket.on('joinMessage', (data) => { 
+        observer.next(data);
+      })
+      return () => { this.socket.disconnect() }
+    });
+    return observable;
+  }
+
+  leaveChatroom(room){
+    return this.socket.emit('leaveChatroom', room);
+  }
+  leaveMessage() {
+    let observable = new Observable<any>((observer) => {
+      this.socket.on('leaveMessage', (data) => { 
+        observer.next(data);
+      })
+      return () => { this.socket.disconnect() }
+    });
+    return observable;
+  }
+
+  sendMessage(room){
+    return this.socket.emit('sendMessage', room);
+  }
+  reciveMessage() {
+    let observable = new Observable<Chatmessage>((observer) => {
+      this.socket.on('reciveMessage', (data) => { 
+        observer.next(data);
+      })
+      return () => { this.socket.disconnect() }
+    });
+    return observable;
+  }
+   /* ======================================================= */
+  /*                       Seller Chat                     */
+  /* ======================================================= */
+  readMessage(data){
+    return this.socket.emit('readMessage',data);
+  }
+
+  recivereadMessage() {
+    let observable = new Observable<any>((observer) => {
+      this.socket.on('recivereadMessage', (data) => {
+        observer.next(data);
+      })
+      return () => { this.socket.disconnect() }
+    });
+    return observable;
+  }
+
+  typingMessage(data){
+    return this.socket.emit('typingMessage',data);
+  }
+
+  reciveTypingMessage() {
+    let observable = new Observable<any>((observer) => {
+      this.socket.on('reciveTypingMessage', (data) => {
+        observer.next(data);
+      })
+      return () => { this.socket.disconnect() }
+    });
+    return observable;
+  }
+
+  onlineSeller(room){
+    return this.socket.emit('onlineSeller', room);
+  }
+
+  onlineMessageSeller() {
+    let observable = new Observable<any>((observer) => {
+      this.socket.on('onlineMessageSeller', (data) => { 
+
+        observer.next(data);
+      })
+      return () => { this.socket.disconnect() }
+    });
+    return observable;
+  }
+
+
+  joinChatroomSeller(room){
+    return this.socket.emit('joinChatroomSeller', room);
+  }
+
+  // joinMessageSeller() {
+  //   let observable = new Observable<any>((observer) => {
+  //     this.socket.on('joinMessageSeller', (data) => { 
+  //       observer.next(data);
+  //     })
+  //     return () => { this.socket.disconnect() }
+  //   });
+  //   return observable;
+  // }
+
+  leaveChatroomSeller(room){
+    return this.socket.emit('leaveChatroomSeller', room);
+  }
+  // leaveMessageSeller() {
+  //   let observable = new Observable<any>((observer) => {
+  //     this.socket.on('leaveMessageSeller', (data) => { 
+  //       observer.next(data);
+  //     })
+  //     return () => { this.socket.disconnect() }
+  //   });
+  //   return observable;
+  // }
+
+  sendMessageSeller(room){
+    return this.socket.emit('sendMessageSeller', room);
+  }
+  reciveMessageSeller() {
+    let observable = new Observable<Chatmessageseller>((observer) => {
+      this.socket.on('reciveMessageSeller', (data) => {
+ 
+        observer.next(data);
+      })
+      return () => { this.socket.disconnect() }
+    });
+    return observable;
+  }
+
+  unautharised() {
+    let observable = new Observable<Chatmessageseller>((observer) => {
+      this.socket.on('unautharised', (data) => {
+ 
+        observer.next(data);
+      })
+      return () => { this.socket.disconnect() }
+    });
+    return observable;
+  }
+
+  reciveMessageSellerLatest() {
+    let observable = new Observable<ChatmessageLatest>((observer) => {
+      this.socket.on('reciveMessageSellerLatest', (data) => { 
+        observer.next(data);
+      })
+      return () => { this.socket.disconnect() }
+    });
+    return observable;
+  }
+
+  
+  blockSellerRoom(room){
+    return this.socket.emit('blockSellerRoom', room);
+  }
+
+  reciveMessageRoomBlock() {
+    let observable = new Observable<any>((observer) => {
+      this.socket.on('reciveMessageRoomBlock', (data) => { 
+        observer.next(data);
+      })
+      return () => { this.socket.disconnect() }
+    });
+    return observable;
+  }
+
+
+

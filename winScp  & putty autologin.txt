@@ -1,0 +1,6 @@
+https://superuser.com/questions/44106/is-there-a-way-to-auto-login-in-putty-with-a-password/44117
+
+Options > Preferences >Integration >Application >remember session password for putty chk
+
+
+command (in winScp) > open in putty

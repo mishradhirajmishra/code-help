@@ -1,0 +1,19 @@
+const request = require('request');  
+
+module.exports.sendSMS= ((req, res, next)=> {
+    let phone=+918707526612;
+    let otp=1234;
+    var options = {
+      method: 'GET',
+      url: 'https://2factor.in/API/V1/2ad0cd48-f2b8-11ea-9fa5-0200cd936042/SMS/' + phone + '/' + otp + '/OAUAUG2021',
+      headers: { 'content-type': 'application/x-www-form-urlencoded' },
+      form: {}
+  };
+  request(options, function (error, response, otp) {
+      if (error) throw new Error(error);
+      otp = JSON.parse(otp);
+      res.send({ msg: "An OTP has been sent to your registered Mobile Number",  class: 'success', status: otp.Status });
+       
+  });
+   
+ })

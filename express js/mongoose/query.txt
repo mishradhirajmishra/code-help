@@ -1,0 +1,120 @@
+Character.deleteMany({ name: /Stark/, age: { $gte: 18 } })
+Character.deleteOne({ name: 'Eddard Stark' })
+MyModel.find({ name: 'john', age: { $gte: 18 } })
+MyModel.find({ name: /john/i }, 'name friends')
+MyModel.find({ name: /john/i }, null, { skip: 10 })
+Adventure.findById(id, 'name length')
+Adventure.findByIdAndDelete(id)  // or findOneAndDelete({ _id: id })
+Model.findByIdAndRemove(id)      // or  findOneAndRemove({ _id: id }, ...)
+
+---------------------------------------------------------------
+Options:
+sort: if multiple docs are found by the conditions, sets the sort order to choose which doc to update
+maxTimeMS: puts a time limit on the query - requires mongodb >= 2.6.0
+select: sets the document fields to return
+projection: like select, it determines which fields to return, ex. { projection: { _id: 0 } }
+rawResult: if true, returns the raw result from the MongoDB driver
+strict: overwrites the schema's strict mode option for this update
+
+A.findOneAndRemove(conditions, options, callback) // executes
+A.findOneAndRemove(conditions, options)  // return Query
+A.findOneAndRemove(conditions, callback) // executes
+A.findOneAndRemove(conditions) // returns Query
+A.findOneAndRemove()           // returns Query
+
+-------------------------------------------------------------
+Options:
+sort: if multiple docs are found by the conditions, sets the sort order to choose which doc to update
+maxTimeMS: puts a time limit on the query - requires mongodb >= 2.6.0
+select: sets the document fields to return
+projection: like select, it determines which fields to return, ex. { projection: { _id: 0 } }
+rawResult: if true, returns the raw result from the MongoDB driver
+strict: overwrites the schema's strict mode option for this update
+
+A.findOneAndReplace(conditions, options, callback) // executes
+A.findOneAndReplace(conditions, options)  // return Query
+A.findOneAndReplace(conditions, callback) // executes
+A.findOneAndReplace(conditions) // returns Query
+A.findOneAndReplace()           // returns Query
+
+
+-------------------------------------------------------------
+Options:
+new: bool - if true, return the modified document rather than the original. defaults to false (changed in 4.0)
+upsert: bool - creates the object if it doesn't exist. defaults to false.
+overwrite: bool - if true, replace the entire document.
+fields: {Object|String} - Field selection. Equivalent to .select(fields).findOneAndUpdate()
+sort: if multiple docs are found by the conditions, sets the sort order to choose which doc to update
+
+A.findOneAndUpdate(conditions, update, options, callback) // executes
+A.findOneAndUpdate(conditions, update, options)  // returns Query
+A.findOneAndUpdate(conditions, update, callback) // executes
+A.findOneAndUpdate(conditions, update)           // returns Query
+A.findOneAndUpdate()                             // returns Query
+
+------------------------------------------------------------------------------------
+Model.hydrate()
+Shortcut for creating a new Document from existing raw data, pre-saved in the DB. The document returned has no paths marked as modified initially.
+mongooseCandy = Candy.hydrate({ _id: '54108337212ffb6d459f854c', type: 'jelly bean' });
+
+---------------------------------------------------------------------------------------
+Mongoose always validates each document before sending insertMany to MongoDB. So if one document has a validation error, no documents will be saved, unless you set the ordered option to false.
+const arr = [{ name: 'Star Wars' }, { name: 'The Empire Strikes Back' }];
+Movies.insertMany(arr, function(error, docs) {});
+
+---------------------------------------------------------------------------------------
+Model.listIndexes()
+Lists the indexes currently defined in MongoDB.
+
+------------------------------------------------------------------
+
+Model.populate()
+
+path: space delimited path(s) to populate
+select: optional fields to select
+match: optional query conditions to match
+model: optional name of the model to use for population
+options: optional query options like sort, limit, etc
+justOne: optional boolean, if true Mongoose will always set path to an array. Inferred from schema by default.
+strictPopulate: optional boolean, set to false to allow populating paths that aren't in the schema.
+
+User.populate(users, { path: 'dog', select: 'name' });
+
+-------------------------------------------------------------------------------------------------------
+product.sold = Date.now();
+product = await product.save();
+
+Character.remove({ name: 'Eddard Stark' });
+
+Model.replaceOne({},{})
+
+MyModel.update({ age: { $gt: 18 } }, { oldEnough: true }); // upsert (boolean),multi (boolean);
+
+Person.updateMany({ name: /Stark$/ }, { isDeleted: true })
+Person.updateOne({ name: 'Jean-Luc Picard' }, { ship: 'USS Enterprise' });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Link.distinct('url', { clicks: {$gt: 100}}, function (err, result) {
+  if (err) return handleError(err);
+
+  assert(Array.isArray(result));
+  console.log('unique urls with more than 100 clicks', result);
+})
+
+
+Character.exists({ name: 'Jean-Luc Picard' }); // Returns true if at least one document exists in the database that matches the given filter, and false otherwise.

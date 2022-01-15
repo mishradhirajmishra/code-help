@@ -1,0 +1,71 @@
+ 
+ 
+ ------------------------------------
+ 
+ var admin = require("firebase-admin");
+var serviceAccount = require("./fir-adminsdk.json");
+var {User,UserPushNotification} = require('../models/user');
+ 
+admin.initializeApp({ credential: admin.credential.cert(serviceAccount)});
+
+var options ={ priority:"high",timeToLive:60*60*24,ledColor: [240, 0, 45, 1]}
+let payload= {
+  data:{ link:"", type:''},
+  notification:{ title: '', body: '',icon: "assets/front-end/img/logo/center-logo.png",color: "#bf9223", badge: "1", sound: "default" ,click_action:""}
+ };
+ module.exports.byUserId = (type,userId,title,body,url)=> {
+  payload.data.type=type; 
+  payload.notification.click_action="https://beta.offersaroundus.com"+url;
+  payload.notification.title=type+'-'+title;
+  payload.notification.body=body;  
+ 
+  // console.log(payload);
+  if(type!='CHAT'){
+  userPushNotification = new UserPushNotification({user_id:userId ,   url: url,   heading:body}); 
+  userPushNotification.save()
+  .then((result2)=>{  }).catch(err => {console.log(err)})
+}
+   User.findById({ _id: userId })
+  .then(user => {
+    if(user && user.pushNotId  && user.loginStatus){    
+      user.pushNotId=user.pushNotId.filter(x=>x!==null); 
+      if(user.pushNotId.length>0){ admin.messaging().sendToDevice(user.pushNotId,payload,options) .then((res1)=>{ }).catch(err => {console.log(err)})  
+      }
+    }
+  }).catch(err=>{console.log(err)}); 
+ }
+
+ module.exports.byPushNotId = (type,PushNotId,title,body)=> {  
+  payload.data.type=type;
+  payload.notification.click_action="https://beta.offersaroundus.com";
+  payload.notification.title=type+'-'+title;
+  payload.notification.body=body;
+  // console.log('-----------------------------------------------------------------------------');
+  // console.log(payload);
+  // console.log('-----------------------------------------------------------------------------');
+   if(PushNotId.length>0){
+    admin.messaging().sendToDevice(PushNotId,payload,options).then((res)=>{ }).catch(err => {console.log(err)})
+   }
+  
+ }
+
+------------------------------------------------------------------------------------------------
+const PushNotification = require("./config/pushnotification");
+
+PushNotification.byUserId('CHAT', data.chatMessageLatest.s_user_id, title, data.chatMessageLatest.text, '');
+
+PushNotification.byPushNotId('admin-notification', req.body.pushNotId, req.body.notification[0].heading, req.body.notification[0].notification);
+--------------------------------------------------------------------
+//fir-adminsdk.json in same directory
+{
+  "type": "service_account",
+  "project_id": "oaus-push-notification",
+  "private_key_id": "d5eebe3088e4da27a57db2b2fc33038707c978c5",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvAIBADANBgkqhkiG9w0BAQEFAASCBKYwggSiAgEAAoIBAQCKcjNafgAY11Ck\ntbcj35op9JVgc0PL6JTH8Cyx8SQAtq7BovHByNNRb3pn5w9mzaKt/HRt4zr+VxTL\nLq1icJR+rJBxKO0UUTHatfcI0vBk9Af7TcMGHVn9tbqvb+WoCNsh8oegqQPKpmpJ\ns9kYUCMUUU97z8FkEJPZv3/1M64H219T/yFOv+GmM0Cw8Ieugvtga3RNmmj0Uk3+\nsIWLN+IQOVNcHXrL4tCEl4IZ7aQPPqf1femGzWDMNGfYlf2u65kDFRYOJp2EIMwr\noBfvr+HLs/FUpeDgEmwd265VAzdMkP5jDhsaxZkTR8O10vQQDsGIaMz8v5+EJAd4\n+gfdAa8lAgMBAAECggEAAN4NGYPXYLbdbkeMX/3DPubYyYocIm3qaLcSs9BMwNhk\nKRoDpVddw5Fzbq03uOKQiPVSjjgYCYazWAzxA/N5BEyOelCeugh1y7OYjZ/Ms8U3\nofwI8CpE6XfQm8+TdivZogSdk7foKl/dvWjfP+2Lzer7sk0V60uTSynA/BQYnG7I\nDzFF0XjoaeU4wyn8fAyUvCWFvGUhL6KcpXQkE1dp6f41PaFY313GFYVGjoGzT/wY\n3uiFIUjzvtgSy0BXNwXsncpmkxkW9m9NLlz3/RrAvDSwpq+a7OWdYEGuRSnH5euw\n2/5vOPcmOC9eUyml9Ucz4J5g7eU+Aev0lB1A9j0IzQKBgQDDZGX5eFVJ9WVQlH6G\niaMkkCWbdSrHIN8Xyn30xuH3cmUPxuG7IwyYDfEtPB2NEEhOPrF+GgDb3OfzPWOd\nEFAMAuXUFgtg5NMhhQG+0FjOkfOZaMDtbEOeJtXXO/Gf7gbUZ3hg47TaqplOwBQn\nbnWTXZ+VLXMtFji+R4b+RPKYnwKBgQC1Y9tcviWVEeuUWBTzh7eShorAlM9o/JnR\nCO+l6fAhWorMGcrVyNrNimB0LRVonlE4CvlJQVqHTm35lCFAuFUypkS6HTm/2V8d\nNK2XTMQIxuQYd2TBwocvDu3R1VPEMkeWygWxnHXhnS+Sri/SqZp0e23ZPot6jpzK\nNas6St/tuwKBgBW49bVUcXb1dzwMJjzi1GZeODAeSJE20Faexn4OFlUiPKYSYEoj\nzWSiOCvlQQvLwZ4hTi5MycenuYnLS2XMyHltYQvBH6a4CdjyJo2GMDlW9JQbl0dN\n//53JtL08Rnspom6ryFmb1bYHI8qv5LaruuhPvqgwOtESy6sWQ+vrqDVAoGAHh5g\nlDu2fdQl69HcWLuWTawtaeDLt8EJwV3cfQ4lI0Sne1BlD650NmDdtyytO1veXJHl\n5rYFVCY/uItSIi75ZpmZG9YyepqbYnwWvuKuQk7UHQPmJQ4p6DRwZMEpUZCPtogA\n/gbexAGXnqFxq2ciEGlWShZKjqUTf7f9oIZCPHUCgYAxNQWWEyoLgSDauUEvhVPz\nyICXDHFR7zGiM1m8I/M9zwpnVQIYr1P52Q2hzlY9Ue/B745wOASvofU3bRcQfwxl\nrMoQ+7hfAHQrKGMBovxeG8stbHlo54CLPNpmQQJD0U+9MuK6TIviWXWO1vU8RU4o\nMuxjATsXg93pUhZqgkvbWQ==\n-----END PRIVATE KEY-----\n",
+  "client_email": "firebase-adminsdk-y1qdr@oaus-push-notification.iam.gserviceaccount.com",
+  "client_id": "110692263972578894445",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/firebase-adminsdk-y1qdr%40oaus-push-notification.iam.gserviceaccount.com"
+}

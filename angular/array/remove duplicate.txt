@@ -1,0 +1,17 @@
+
+Compare two javascript arrays and remove duplicate entries
+
+
+const arr1 = [
+  {"member_name":"Test1","item":"Sword"},
+  {"member_name":"Test2","item":"Sword"}
+];
+
+const arr2 = [
+  {"member_name":"Test1","item":"Sword"},
+  {"member_name":"Test2","item":"Sword"},
+  {"member_name":"Test1","item":"Shield"}
+];
+
+const res = arr2.filter(({member_name:a, item:x}) => !arr1.some(({member_name:b, item:y}) => a === b && x === y));
+console.log(res);

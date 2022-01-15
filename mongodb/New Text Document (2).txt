@@ -1,0 +1,20 @@
+mongo --host localhost
+ip a |grep net   /list ip 
+
+
+mongo --host your ip   // show conection refused
+
+goto etc/mongod.conf
+
+add binding your ip
+
+ net:
+  port: 27017
+  bindIp: 127.0.0.1,142.93.212.68
+  
+  sudo systemctl restart mongod
+   sudo systemctl status mongod
+   
+sudo rm /var/lib/mongodb/mongod.lock
+sudo mongod --dbpath /var/lib/mongodb/ --repair
+sudo mongod --dbpath /var/lib/mongodb/ --journal

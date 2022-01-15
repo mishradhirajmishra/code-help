@@ -1,0 +1,1 @@
+  let search = {'published': true, 'status': "true", "geolocation" : { $near: { $geometry: req.body.geolocation, $maxDistance: req.body.radius * req.body.rToM } }};
