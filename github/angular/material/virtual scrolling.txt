@@ -1,0 +1,22 @@
+===================================
+
+                <cdk-virtual-scroll-viewport itemSize="50" class="example-viewport container" fxLayout="column" fxLayout.xs="column" fxLayoutGap='8px'>
+                                <div *cdkVirtualFor="let item of items" class="example-item">{{item}}</div>
+                </cdk-virtual-scroll-viewport>
+.............................
+  items = Array.from({length: 100000}).map((_, i) => `Item #${i}`);
+.....................................................
+
+// in module file
+import {ScrollingModule} from '@angular/cdk/scrolling';
+
+............................
+.example-viewport {
+	height: 90%;
+	width: 100%;
+	border: 1px solid black;
+  }
+  
+  .example-item {
+	height: 50px;
+  }

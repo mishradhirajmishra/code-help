@@ -1,0 +1,39 @@
+const EventEmiter = require('events');
+
+class Person extends EventEmiter{
+  constructor(name){
+    super();
+   this._name = name;
+  }
+  get name(){
+    return this._name;
+  }
+}
+ 
+const ramesh = new Person('Ramesh');
+
+ramesh.on('name',()=>{
+  console.log('my name is '+ ramesh.name);
+})
+ramesh.emit('name');
+==========================================================================
+myEmitter.on('event', () => {});
+ .prependListener('event', () => { console.log('prepend')})
+ .prependOnceListener('event', () => { console.log('prepend once')})
+myEmitter.addListener('event', () => {});
+myEmitter.once('event', () => {});
+MyEmitter.listenerCount(myEmitter, 'event');
+myEmitter.setMaxListeners();
+myEmitter.getMaxListeners();
+myEmitter.eventNames()
+ .removeAllListeners('event')
+ .removeAllListeners()
+==========================================================================
+ const MyEmitter = require('events');
+
+ const myEmitter = new MyEmitter();
+ myEmitter.on('event', () => {});
+ myEmitter.on('event', () => {});
+ myEmitter.on('event', () => {});
+ console.log(MyEmitter.listenerCount(myEmitter, 'event')); // return 3
+==========================================================================

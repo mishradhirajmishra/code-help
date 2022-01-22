@@ -1,0 +1,11 @@
+composer create-project --prefer-dist laravel/laravel blog
+php artisan make:controller controller-name
+
+
+Route::get('/students/{mo?}', 'Students@index')->where(['mo' => "[0-9]+"]);  // only no allowed in paraameter
+    function index($mo=123){    echo $mo;   }         // controller      
+
+php artisan make:middleware CheckAge
+       
+   <body>@yield('body')</body> //in master layout
+@section('body')  <tag>    @endsection // in including file

@@ -1,0 +1,17 @@
+git config --global user.name "mishradhirajmishra"
+git config --global user.email "dhiraj.siswa.mishra@gmail.com"
+git init
+git add -A
+git status
+git commit -m "first commitment "
+git remote add origin https://github.com/mishradhirajmishra/codeigniter_code_help.git
+git push -u origin master
+dhiraj.siswa.mishra@gmail.com/dhikrish123 
+git clone git://github.com/schacon/grit.git
+git pull origin master
+
+1462
+
+https://bitbucket.org/whoisamitsingh/atwk-angular/src/firebase-2/
+
+https://github.com/joshnh/Git-Commands

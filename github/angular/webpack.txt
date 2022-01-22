@@ -1,0 +1,4 @@
+npm install -g webpack-bundle-analyzer
+ng build --stats-json
+webpack-bundle-analyzer path/to/your/stats.json
+localhost:8888

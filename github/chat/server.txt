@@ -1,0 +1,24 @@
+const express = require('express');
+const socket = require('socket.io');
+const cors = require('cors');
+const PORT = 3000 ;                                                                                                                             
+const app = new express()
+app.use(cors());
+const server= app.listen(PORT, ()=> { console.log("server is running on port no : " + PORT)});
+const io = socket(server);
+io.on('connection',socket =>{
+    console.log('connected with socket Id :' + socket.id);
+    socket.on('sendMessage',(data)=>{
+        socket.join(data.room)
+        io.sockets.emit('reciveMessageData',data);
+        console.log(data.room);
+    })
+	 socket.on('TypingMessage',(data)=>{       
+         socket.join(data.room)
+        socket.broadcast.emit('reciveTypingMessageData',data);
+		console.log(data.message);
+    })
+})
+
+
+

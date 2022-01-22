@@ -1,0 +1,12 @@
+ git config --global user.name "mishradhirajmishra"
+git config --global user.email "dhiraj.siswa.mishra@gmail.com"
+git init
+git add -A
+ git status
+git commit -m "first commitment "
+git remote add origin https://github.com/mishradhirajmishra/test.git
+git push -u origin master
+
+ 
+git clone https://github.com/mishradhirajmishra/test.git
+git pull origin master

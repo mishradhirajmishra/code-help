@@ -1,0 +1,7 @@
+C:\Program Files\MongoDB\Server\4.0\bin
+C:\Program Files\nodejs
+
+
+
+C:\Users\dhira\AppData\Roaming\npm\node_modules\@angular
+%AppData%\npm

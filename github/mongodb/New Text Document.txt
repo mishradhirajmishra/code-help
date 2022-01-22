@@ -1,0 +1,108 @@
+install mongo db
+C:\data\db folder
+ set localvariable
+C:\Program Files\MongoDB\Server\4.0\bin
+
+open cmd and type mongod
+=======================================
+// list data base
+
+> show dbs
+
+// pointed db
+
+> db
+=======================================
+//insert record
+db.user.insert({
+    "name":"dhiraj",
+    "age":30
+    })
+db.user.insert([{
+    "name":"dhiraj",
+    "age":30
+    },{
+    "name":"dhiraj",
+    "age":30
+    }])
+
+ db.user.insert(  {
+    "name":"dhiraj",
+     "color":["red","green"],
+      "date" :Date(),
+       "course": {},
+       "bool":true, 
+       "empty":null
+    })
+=====================================
+// show record
+db.user.find()
+=======================================
+db.dropDatabase()
+====================================
+db.createCollection("users")
+
+db.createCollection("users",{
+  "capped":true,
+  "size": 123456,
+  "autoIndexId":true
+})
+show collections
+db.user.drop()
+=====================================
+db.user.remove({})
+db.user.remove()  // remove all
+======================================
+db.user.find({},{"name":1,"city":1,"_id":0})  //show limlited fied  (projection)
+====================================
+db.user.find().limit(3)
+db.user.find().limit(3).skip(2)
+db.user.find().sort({"salary":1})   // -1 for decending 
+db.user.update({"city":"lko"},{ $set :{ "salary":"20000"}},{multi:true})
+
+====================================
+  { "key" : "value"}
+  { "key" : { $lt:"value"}}     <
+  { "key" : { $lte:"value"}}     <=
+  { "key" : { $gt:"value"}}      >
+  { "key" : { $gte:"value"}}     >=
+  { "key" : { $ne:"value"}}      !=
+  { "key" : { $gte:"value1",$lte:"value2",}}      <=value1 && >=value2
+  { "key1" : { $gte:"value1",$lte:"value2","key2" : { $gte:"value1",$lte:"value2",}}   key1   <=value1 && >=value2  key2   <=value1 && >=value2
+======================================
+ {   $and[   {} ,   {}  ]  }
+ {   $or[   {} ,   {}  ]  }
+ {   $and[   {} ,   {}  ] , $or[   {} ,   {}  ]  }
+====================================== 
+// create index.
+ db.user.ensureIndex({"email":1,"":-1}) 
+=========================================
+create bacup
+// create folder & open cmd of that folder
+>  mongodump
+======================
+>mongorestore    // insame folder
+
+
+
+//=============================== queries
+
+Animal.find().where('pets').all(['cat','dog','fox'])  // select matching from array
+
+
+
+db.test.aggregate([{$group : {_id : '$title' , 'total_count' : {$sum : 1}}}])         //  group by count
+
+
+
+
+
+
+
+
+
+
+
+
+
+

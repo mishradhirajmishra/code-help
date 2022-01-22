@@ -1,0 +1,14 @@
+ npm install http-server -g   
+
+
+
+ng add @angular/pwa --project *project-name*
+
+ng build --prod
+
+http-server -p 8080 -c-1 dist/<project-name>
+
+
+https://angular.io/guide/service-worker-getting-started
+
+

@@ -1,0 +1,5 @@
+import {MatExpansionModule} from '@angular/material/expansion';
+
+//use in component.ts file
+import { MatExpansionPanel } from '@angular/material';
+viewProviders: [MatExpansionPanel]

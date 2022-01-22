@@ -1,0 +1,79 @@
+for (i = 0; i <= 1000; i++){ 
+ db.products.insert({
+    "categories" : [ 
+        ObjectId("5f3594a4b087452dc0d206ba"), 
+        ObjectId("5f3594aab087452dc0d206bb")
+    ],
+    "filters" : [ 
+        ObjectId("5f35943bb087452dc0d206b2"), 
+        ObjectId("5f35943fb087452dc0d206b3"), 
+        ObjectId("5f359458b087452dc0d206b4")
+    ],
+    "rProducts" : [],
+    "imageGallery" : [ 
+        ObjectId("5f352c497155490adcfd3a3b"), 
+        ObjectId("5f19e5742629d62bc0da216c"), 
+        ObjectId("5f352c497155490adcfd3a3b")
+    ],
+    "attributes" : [ 
+        {
+            "_id" : ObjectId("5f3509267155490adcfd3a2d"),
+            "detail" : "qwewq"
+        }, 
+        {
+            "_id" : ObjectId("5f35092c7155490adcfd3a2e"),
+            "detail" : "wqeewq"
+        }
+    ],
+    "title" : "product title -" + i,
+    "mttitle" : "meta title",
+    "slug" : "title",
+    "description" : "descriptionb",
+    "mtdescription" : "meta tag description",
+    "keywords" : "meta keywords",
+    "productTags" : "search keywords",
+    "model" : "123",
+    "sku" : "sk u-123",
+    "price" : 100,
+    "startDate" : "2020-09-11T18:30:00.000Z",
+    "endDate" : "2020-09-18T18:30:00.000Z",
+    "length" : 12,
+    "lengthClass" : "Inch",
+    "width" : 32,
+    "height" : 23,
+    "weight" : 123,
+    "weightClass" : "Gram",
+    "qtyValue" : 12+i,
+    "minqty" : 1,
+    "maxqty" : 12,
+    "stockstatus" : "23d",
+    "taxclass" : "yes",
+    "shipping" : "rsp",
+    "status":"active",
+    "option" : [ 
+        {
+            "_id" : ObjectId("5f4b0fa4fc49bc066ce26a39"),
+            "name" : "red",
+            "quantity" : 12,
+            "price" : 121,
+            "weight" : 2121
+        }, 
+        {
+            "_id" : ObjectId("5f4b0fa9fc49bc066ce26a3a"),
+            "name" : "green",
+            "quantity" : 1212,
+            "price" : 2121,
+            "weight" : 212
+        }
+    ],
+    "discountclass" : "ps",
+    "dValue" : 10,
+    "discountunit" : "dc",
+    "dStartDate" : "2001-12-28T18:30:00.000Z",
+    "dEndDate" : "2020-09-23T18:30:00.000Z",
+    "featuredimage" : ObjectId("5f19e5742629d62bc0da216c"),
+    "manufacturer": ObjectId("5f35266f7155490adcfd3a38")
+
+})
+ 
+}
