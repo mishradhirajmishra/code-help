@@ -1,0 +1,89 @@
+ npm i multer fluent-ffmpeg sharp
+---------------------------------------------
+
+var multer = require('multer');
+const path = require('path');
+const { response} = require('express');
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, path.join(__dirname, '../media/'));
+  },
+  filename: (req, file, callback) => {
+    callback(null, file.fieldname + '-' + Date.now() + '.' + file.mimetype.split("/")[1])
+  }
+})
+module.exports =  multer({storage: storage});
+
+
+
+---------------------------------
+const upload=require('./config/multer-settings');
+
+router.post('/addImage', upload.fields([{name: 'image'}]), (req, res) => { 
+   res.status(200).send({name:req.files.image[0].filename});
+ })
+
+-----------------------------------------------------------------------------------
+=====================================================================================
+
+var multer = require('multer');
+const ffmpeg = require('fluent-ffmpeg');
+const path = require('path');
+const mediaDir = path.join(__dirname, '../media/');
+const { Shop } = require("../models/shop");
+var sharp = require('sharp');
+
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) { cb(null, mediaDir); },
+  filename: (req, file, callback) => {
+    let timeStamp = Date.now();
+    fileName = req.body.type + '-' + timeStamp + '.' + file.mimetype.split("/")[1];
+    thumbFileName = 'thumb' + '-' + timeStamp + '.png';
+    thumbFileNameWebp = 'gal-thumb' + '-' + timeStamp + '.webp'; 
+    fullFileNameWebp = 'gal-full' + '-' + timeStamp + '.webp'; 
+
+    if (req.body.type && req.body.type == 'video') {
+      ffmpeg(mediaDir + fileName)
+        .on('filenames', function (filenames) {
+          Shop.updateOne({ _id: req.body.shop_id }, { videoThumb:filenames ,videoLink:fileName }).then((r) => { console.log(r) }).catch((e) => { console.log(e) });
+        })
+        .on('end', function () { console.log('Screenshots taken'); })
+        .on('error', function (err) { console.error(err); })
+        .screenshots({ count: 4, folder: mediaDir, size: '120x60', filename: thumbFileName });
+    } else   if (req.body.type && req.body.type == 'gallery') { 
+      console.log(req.body.x_slug)
+      setTimeout(() => {
+        sharp(mediaDir + fileName).resize(120,60) 
+        .toFile(mediaDir+thumbFileNameWebp, (err, info) => {
+           if(!err){ Shop.updateOne({ _id: req.body.shop_id }, { $push: { gallery: fullFileNameWebp ,galleryThumb: thumbFileNameWebp,delImg:fileName },x_slug:req.body.x_slug ,showImmage : true, showOffer : false,showVideo : false}).then((r) => { console.log(r+'lllllll') }).catch((e) => { console.log(e) });}
+          console.log(err);
+        });
+        sharp(mediaDir + fileName).resize(500,375) 
+        .toFile(mediaDir+fullFileNameWebp, (err, info) => {
+           if(!err){ 
+            //  Shop.updateOne({ _id: req.body.shop_id }, { $push: { gallery: fileName ,galleryThumb: fullFileNameWebp } }).then((r) => { console.log(r) }).catch((e) => { console.log(e) });
+            }
+          console.log(err);
+        });
+      }, 5);
+    } else if (req.body.type && req.body.type == 'social'){
+       Shop.updateOne({ _id: req.body.shop_id }, { social:fileName ,x_slug:req.body.x_slug }).then((r) => { console.log(r) }).catch((e) => { console.log(e) });
+    }
+    else if (req.body.type && req.body.type == 'social-fb'){
+       Shop.updateOne({ _id: req.body.shop_id }, {socialFb:fileName ,x_slug:req.body.x_slug }).then((r) => { console.log(r) }).catch((e) => { console.log(e) });
+    }
+    else if (req.body.type && req.body.type == 'logo'){
+      Shop.updateOne({ _id: req.body.shop_id }, { logo:fileName }).then((r) => { console.log(r) }).catch((e) => { console.log(e) });
+    }
+    callback(null, fileName)
+  }
+})
+module.exports = multer({ storage: storage });
+
+-----------------------------------------------------
+
+
+
+
+
+

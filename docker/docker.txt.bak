@@ -112,7 +112,7 @@ sudo docker node rm <node id> // remove down node
 
 
 
- 
-//---------------  run jankins
+023e8e1bb7e24acb9d870d6fe4ff37b8
+
 docker run -it -d -p 8080:8080 --name=jenkins-master -d jenkins/jenkins
 

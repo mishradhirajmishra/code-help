@@ -14,7 +14,7 @@ const storage = multer.diskStorage({
  module.exports= multer({ storage: storage })
  ---------------------------------------------------------
  const upload  = require('./config/multer')
- app.use(express.static('media'))
+ 
  app.post('/upload',upload.single('userImage'),(req,res,next)=>{
     res.send({file:req.file.filename,user:req.body.name})
 })

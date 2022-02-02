@@ -3,10 +3,10 @@ const nodemailer = require("nodemailer");
 
 module.exports = async (email,subject,html)=> {
   let transporter = nodemailer.createTransport({
-    host: "smtpout.secureserver.net", // or for gmail service: 'gmail', 
+    host: "smtpout.secureserver.net",
     auth: {
         user: "support@offersaroundus.com",
-        pass: "****",
+        pass: "GauraV123dk",
     },
   });
 
