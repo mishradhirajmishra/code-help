@@ -4,6 +4,7 @@ https://www.digitalocean.com/community/tutorials/how-to-install-nginx-on-ubuntu-
 sudo apt-get update
 sudo apt-get install nginx
 nginx -v
+nginx -t
 sudo systemctl status nginx
 sudo systemctl stop nginx
 sudo systemctl start nginx
