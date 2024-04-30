@@ -80,8 +80,8 @@ sudo systemctl start mongod
 sudo systemctl restart mongod
 sudo systemctl disable mongod
 sudo systemctl enable mongod
-
-
+// mongodb 7
+https://www.cherryservers.com/blog/install-mongodb-ubuntu-22-04
 uninstall mongodb ---------------------------
 https://www.fosstechnix.com/tutorial/mongodb/uninstall-mongodb-from-ubuntu-20-04-lts/
  sudo service mongod stopCopy
