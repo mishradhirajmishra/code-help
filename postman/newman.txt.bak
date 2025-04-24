@@ -1,0 +1,8 @@
+npm i -g newman
+npm i -g newman-reporter-html
+npm i -g newman-reporter-htmlextra 
+
+newman run abc.json // abc.jon in same directory
+newman run abc.json -n 10 // run correction 10 time
+newman run abc.json -r html
+newman run abc.json -r htmlextra

@@ -1,0 +1,13 @@
+   Project.find(query)
+    .populate({ 
+      path: 'pages',
+      populate: [{
+       path: 'components',
+       model: 'Component'
+      },{
+        path: 'AnotherRef',
+        model: 'AnotherRef',
+        select: 'firstname lastname'
+      }] 
+   })
+   .exec(function(err, docs) {});

@@ -1,0 +1,33 @@
+npm install cors
+
+
+var cors = require('cors')
+
+// allow all  route and all origin
+app.use(cors())
+
+
+// allow single route  and all origin
+app.get('/products/:id', cors(), function (req, res, next) {  })
+
+
+// cors setting
+var whitelist = ['http://example1.com', 'http://example2.com']
+var corsOptions = {
+  origin: function (origin, callback) {
+    if (whitelist.indexOf(origin) !== -1) {
+      callback(null, true)
+    } else {
+      callback(new Error('Not allowed by CORS'))
+    }
+  }
+}
+
+
+// allow all  route and whitelist origin
+app.use(cors(corsOptions))
+
+
+// allow single route  and whitelist origin
+app.get('/products/:id', cors(corsOptions), function (req, res, next) {  })
+

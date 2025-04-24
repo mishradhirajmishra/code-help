@@ -1,0 +1,13 @@
+ pip install Django
+django-admin startproject mysite
+py manage.py runserver
+py manage.py runserver 0:8000
+py manage.py startapp polls
+
+python manage.py makemigrations <mysite>
+python manage.py migrate
+
+python manage.py createsuperuser
+
+
+   {% load staticfiles %}

@@ -1,0 +1,94 @@
+-------------------------------------------------------
+date 
+cal 
+---------------------------------------------------------
+sudo -i          //switch user to root
+exit             // to switch root to user 
+pwd             // current working directory
+---------------------------------------------------------
+ls    // list directory
+ls /    // last all root dir
+ls /etc  // show content of etc folder
+ls -t // It sorts the file by modification time
+ls -lt // To sort the file names displayed in the order of last modification
+ls -ltr // To sort the file names in the last modification time in reverse order.
+ls -1  //Display One File Per Line
+ls -l // To show long listing information about the file
+ls -lh // h stands for human readable form
+ls -a // To show all the hidden files in the directory
+ls -A : To show the hidden files, but not the ‘.’ (current directory) and ‘..’ (parent directory
+ls -R //  To show all the files recursively
+ls -i // Display File Inode Number Using 
+-------------------------------------------------------------
+// list package
+apt list
+apt list | grep nginx
+apt list | more
+apt list --installed
+apt list -a pkgNameHere
+apt list -a sudo
+--------------------------------------------------------------
+mkdir abc
+rmdir abc
+rm -r abc // ifcontain file and folder in it delete recursiv
+rm xyz.txt
+--------------------------------------------------------------
+// create file 
+touch <filename.ext>
+cat >abc.txt
+echo "text iwrite in file and save >xyz.txt
+file file1.txt // display file type like (file1.txt: ASCII text)
+wc file1.txt // display file size like ( 8  18 112 file1.txt)
+head file1.txt //  display file  content
+tail file1.txt //  display file  content
+tail -n2 file1.txt //  display file  content last 2 line
+ tail /etc/group
+----------------------------
+sudo apt install nano
+nano editer
+nano abc.txt
+// edit file and pres crl+x and y to save
+
+--------------------------
+sudo apt install vim
+// fim editer
+
+vim abc.txt 
+// press i to insert
+press esc button the :wq or :q
+----------------------------------------
+apt-get update  //update your package lists
+apt-get upgrade     //  update installed software  But it will not install or remove extra packages.
+apt-get dist-upgrade  //To upgrade all the packages on your system, and, if needed for a package upgrade, installing extra packages or removing packages
+------------------------------------------------------
+lsb_release -a //display the Ubuntu version
+cat /etc/os-release
+uname -a
+lsblk  // hard-disk partition information (list block devices)
+man <command> // show command detail  
+top // display Linux processes after this press f for term definition and q for quit
+ps  // show background services
+ps au // display current user service
+fg  // show foreground services
+jobs  // show sleeped services
+kill <pid>   
+kill -9 <pid>  // kill forcifully	
+=========================================================
+useradd <user name>
+sudo passwd <user name>
+id <user name>      
+--------------------------------
+ls -l /tmp //display user temp data
+==================================================
+file permission
+read => r/4  write w/2 exicute x/1
+umask <0002> // set default permission for file and directory to be created default (0777 -0002 = 0755  user-rwx group-rwx other r-x)
+sudo chmod 777 <dir or file> // set default permission for file and directory
+
+
+  
+  
+  
+  
+  
+  

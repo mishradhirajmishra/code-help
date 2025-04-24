@@ -1,0 +1,62 @@
+const { json } = require('express');
+const express = require('express')
+const amqplib= require('amqplib')
+const app = express();
+PORT = 3000
+
+var q= 'task'
+// Publisher
+var connected = amqplib.connect('amqp://localhost');
+connected.then( conn => conn.createChannel())
+.then((ch)=>  {
+  return ch.assertQueue(q).then((ok)=>  {
+    return ch.sendToQueue(q, Buffer.from( JSON.stringify({msg:'sending msg'})));
+  });
+}).catch(console.warn);
+
+
+
+app.get('/',(req,res)=>{
+  res.send('working '+PORT)
+})
+
+app.listen(PORT,()=>{
+    console.log(`localhost:${PORT} `)
+})
+
+
+===========================================================================
+const express = require('express')
+const amqplib= require('amqplib')
+const app = express();
+PORT = 3001
+
+var q= 'task'
+// consumer
+var connected = amqplib.connect('amqp://localhost');
+connected.then(conn=>conn.createChannel())
+.then(function(ch) {
+  return ch.assertQueue(q).then((ok)=> {
+    return ch.consume(q,(msg)=> {
+      if (msg !== null) {
+        console.log(msg.content.toString());
+        ch.ack(msg);
+      }
+    });
+  });
+}).catch(console.warn);
+
+
+
+app.get('/',(req,res)=>{
+  res.send('working '+PORT)
+})
+
+app.listen(PORT,()=>{
+    console.log(`localhost:${PORT} `)
+})
+
+
+
+
+

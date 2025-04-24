@@ -1,0 +1,139 @@
+==================================================================
+                         Ajax
+==================================================================
+
+ <a onclick="loadview('dashboard')" ></a>
+
+<script>
+    /*================load Page==================*/
+    function  loadview(page) {
+        $("#main_container").html('<div id="loader"></div>');
+        var url='<?php echo base_url() ?>index.php/admin/'+page;
+        $("#main_container").load(url);
+    } 
+    /*================Default dasgboard load==================*/
+    $(document).ready(function(){
+        $("#main_container").html('<div id="loader"></div>');
+        var page = 'dashboard';
+        var url="<?php echo base_url() ?>index.php/admin/"+page;
+        $("#main_container").load(url);
+    });
+</script>
+===================================================================
+form submit 
+===================================================================
+<form id="fupForm"></form>
+<script>
+    $(document).ready(function(e){
+
+        $("#fupForm").on('submit', function(e){
+            $("#submit").hide();
+            e.preventDefault();
+            $.ajax({
+                type: 'POST',
+                url: '<?php echo base_url()?>index.php/admin/add_videos_gallery',
+                data: new FormData(this),
+                contentType: false,
+                cache: false,
+                processData:false,
+                success: function(msg){
+                    $('#subsmsg').html("<div class='alert alert-danger '><a href='#' class='close' data-dismiss='alert' aria-label='close'>&times;</a> Added Successfully <div>");
+                    loadview('videos_gallery')
+                },
+                error: function(){
+                    $('#subsmsg').html("<div class='alert alert-danger '><a href='#' class='close' data-dismiss='alert' aria-label='close'>&times;</a> Something went wrong <span style='color: red'> Try again</span><div>");
+
+                },
+
+            });
+        });
+    });
+</script>
+<script>
+  $(document).ready(function(e){
+            $.ajax({
+                url: '<?php echo base_url()?>index.php/admin/teacher_admin_chat_append_all',
+                type: "POST",
+                datatype: "json",
+                data: {id:id,limit:limit},
+                success: function (msg) {
+                 $("#contact").html(msg);
+                }
+            });
+	    });
+</script>
+
+=====================================================================
+.....................................................................
+                            controller
+.....................................................................
+    public function section_by_class_id($id=''){
+       $section=$this->admin_model->list_section_by_class_id($id);
+      print_r(json_encode($section));
+
+    }
+	
+.....................................................................
+                                view
+....................................................................
+<script>
+    $(document).ready(function () {
+        $('#message').delay(4000).fadeOut();
+    });
+    function getSection(value){
+        var msg='<option>Select</option>';
+        /*----------------------*/
+        $.ajax({
+            type: 'POST',
+            url: '<?php echo base_url()?>index.php/admin/section_by_class_id/'+value,
+            success: function(data){
+                obj=JSON.parse(data);
+                for (var i = 0; i <obj.length; i++) {
+                    msg += '<option value="'+ obj[i].section_id +'">'+obj[i].name+'</option>';
+                }
+                $('#section').html(msg);
+            },
+            error: function(){
+                alert("fail");
+            },
+        });
+        /*----------------------*/
+    }
+</script>
+=========================================================================
+#########################################################################
+=========================================================================
+.....................................................................
+                            controller
+.....................................................................
+    function list_exam(){
+        $data=$this->input->post();
+        $x=$this->admin_model->list_all_exam_allowed_section($data['class_id'],$data['section_id']);
+        echo "<option >select</option>";
+        foreach ($x as $row){
+            $x=$this->admin_model->exam_by_id($row['exam_id']);
+            echo "<option value='" . $row['exam_id'] . "'>" . $x['name'] . "</option>";
+        }
+    }
+.....................................................................
+                                view
+....................................................................
+<script>
+    function getExam(){
+    var cl_id=$('#class_id').val();
+    var sec_id=$('#section').val();
+        /*----------------------*/
+        $.ajax({
+            url: '<?php echo base_url()?>index.php/admin/list_exam',
+            type:"POST",
+            datatype:"json",
+            data:{class_id:cl_id,section_id:sec_id},
+            success: function (msg) {
+                $('#exam').html(msg);
+            },
+            error: function () { alert("fail");
+            }
+        })
+    }
+</script>
+============================================================================

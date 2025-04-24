@@ -1,0 +1,22 @@
+npm i bcryptjs
+
+
+var bcrypt = require('bcryptjs');
+
+      bcryptjs.compare(req.body.password, user.password, function (err, result) {
+        if (err) { console.log(err) }
+        if (result) {
+               // valid password
+        } else {
+           // invalid password
+        }
+      });
+
+
+  bcryptjs.genSalt(10, (err, salt) => {
+    bcryptjs.hash(user.password, salt, function (err, hash) {
+      user.password = hash;
+          
+         // hash password generated
+    })
+  });

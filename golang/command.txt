@@ -1,0 +1,36 @@
+
+============================================
+LIVE RELOAD
+============================================
+
+go install github.com/air-verse/air@latest
+export PATH=$(go env GOPATH)/bin:$PATH
+source ~/.zshrc  # or source ~/.bash_profile
+air -v
+air init
+air
+
+============================================
+FIBER
+============================================
+go get github.com/gofiber/fiber/v2
+
+
+
+----------------
+func Find(collectionName string, params bson.M, projection bson.M, sort bson.M) []bson.M {
+	collection := GetCollection(collectionName)
+	var documents []bson.M
+	cursor, err := collection.Find(context.Background(), params, options.Find().SetProjection(projection))
+	if err != nil {
+		return nil
+	}
+
+	defer cursor.Close(context.Background())
+	for cursor.Next(context.Background()) {
+		var document bson.M
+		cursor.Decode(&document)
+		documents = append(documents, document)
+	}
+	return documents
+}

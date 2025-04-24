@@ -1,0 +1,46 @@
+npm i jsonwebtoken
+
+
+var jwt = require('jsonwebtoken');
+var key = require('./key')
+module.exports = (req, res, next)=> {
+    if (!req.headers.authorization) {
+      return res.status(401).send('Unautharised Access')
+    } else {
+      let token = req.headers.authorization.split(' ')[1];
+      if (token == 'null') {
+        return res.status(401).send('Unautharised Access')
+      } else {
+        jwt.verify(token, key.secretkey, function (err, decoded) {        
+          if (decoded) {
+            next();
+          } else {
+            return res.status(401).send('Unautharised Access')
+          }
+        });
+      }
+  
+    }  
+  
+  }
+
+
+//secretkey:'dsfjesfhersikfersifkjewiorfjewiorfkjewifjewiklfcmdsklvfcfndsjkf';
+
+// jwt authrization in router
+
+var veryfyToken = require('../config/jwt-werify');
+router.post('/chkAuthariseUser',veryfyToken, function (req, res, next){
+  res.status(200).json({ message: 'autharised'})
+});
+
+
+// jwt token generation in auth router
+var jwt = require('jsonwebtoken');
+
+ jwt.sign({id: user._id, firstName: user.firstName,lastName: user.lastName,phone: user.phone, email: user.email ,role: user.role}, key.secretkey,{ expiresIn: '24h' }, function (err, token) {
+ res.status(201).json({ message: 'login successfully', token ,type:'success' });
+ });
+
+
+

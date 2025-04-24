@@ -1,0 +1,159 @@
+
+--------------- Install Nginx -----------------------------
+https://www.digitalocean.com/community/tutorials/how-to-install-nginx-on-ubuntu-20-04
+sudo apt-get update
+sudo apt-get install nginx
+nginx -v
+nginx -t
+sudo systemctl status nginx
+sudo systemctl stop nginx
+sudo systemctl start nginx
+sudo systemctl restart nginx
+sudo systemctl reload nginx
+sudo systemctl disable nginx
+sudo systemctl enable nginx
+
+--------------- kill node process ----------------------------- 
+sudo pkill node
+--------------- Nginx Sever Block -----------------------------
+sudo mkdir -p /var/www/node
+sudo chown -R $USER:$USER /var/www/node
+sudo chmod -R 755 /var/www/node
+ nano /var/www/node/index.html      // create index file 
+
+sudo nano /etc/nginx/sites-available/node.offersaroundus.com
+
+server {
+        listen 80;
+        listen [::]:80;
+
+        root /var/www/node;
+        index index.html index.htm index.nginx-debian.html;
+
+        server_name node.offersaroundus.com www.node.offersaroundus.com;
+
+        location / {
+                #try_files $uri $uri/ =404;
+                proxy_pass http://localhost:9000;
+        }
+}
+
+sudo ln -s /etc/nginx/sites-available/node.offersaroundus.com /etc/nginx/sites-enabled/
+nginx -t
+sudo systemctl restart nginx
+
+--------------- Install Node -----------------------------
+sudo apt install nodejs
+node -v
+sudo apt install npm
+npm -v
+-----------  remove node -----------
+sudo apt-get purge nodejs npm
+sudo apt-get autoremove
+
+https://speedysense.com/install-nodejs-on-ubuntu-20-04/
+-----------  node  Latest version-----------
+   #curl -sL https://deb.nodesource.com/setup_current.x | sudo -E bash -
+curl -sL https://deb.nodesource.com/setup_14.x | sudo -E bash -
+sudo apt-get install -y nodejs
+
+
+--------------- Install PM2 -----------------------------
+npm install pm2 -g
+pm2 -v
+pm2 start app.js
+pm2 stop app.js
+NODE_ENV=production PORT=9900 pm2 start app.js
+NODE_ENV=production PORT=9000 pm2 start app.js
+NODE_ENV=production PORT=4000 pm2 start dist/test/server/main.js
+
+--------------- Install Mongodb -----------------------------
+curl -fsSL https://www.mongodb.org/static/pgp/server-5.0.asc | sudo apt-key add -
+apt-key list
+echo "deb [ arch=amd64,arm64 ] https://repo.mongodb.org/apt/ubuntu focal/mongodb-org/5.0 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-5.0.list
+sudo apt update
+sudo apt install mongodb-org
+sudo systemctl start mongod.service
+sudo systemctl status mongod
+sudo systemctl stop mongod
+sudo systemctl start mongod
+sudo systemctl restart mongod
+sudo systemctl disable mongod
+sudo systemctl enable mongod
+// mongodb 7
+https://www.cherryservers.com/blog/install-mongodb-ubuntu-22-04
+uninstall mongodb ---------------------------
+https://www.fosstechnix.com/tutorial/mongodb/uninstall-mongodb-from-ubuntu-20-04-lts/
+ sudo service mongod stopCopy
+OR
+sudo systemctl stop mongod
+
+sudo apt-get purge mongodb-org*
+sudo rm -r /var/log/mongodb
+sudo rm -r /var/lib/mongodb
+--------------- Add ssl to nginx ----------------------------- 
+ sudo apt-get update
+ sudo apt install certbot python3-certbot-nginx
+ sudo apt-get update
+ sudo nginx -t
+ sudo systemctl reload nginx
+ sudo certbot --nginx -d example.com -d www.example.com
+ sudo certbot --nginx -d offersaroundus.com -d www.offersaroundus.com
+certbot renew
+ 
+  sudo certbot --nginx -d node.offersaroundus.com -d www.node.offersaroundus.com -d alpha.offersaroundus.com -d www.alpha.offersaroundus.com
+ 
+   sudo certbot --nginx -d beta.offersaroundus.com -d www.beta.offersaroundus.com 
+ sudo certbot --nginx -d offersaroundus.com -d www.offersaroundus.com 
+
+
+
+
+sudo certbot certificates 
+
+sudo certbot delete
+
+
+
+// https://www.digitalocean.com/community/tutorials/how-to-secure-nginx-with-let-s-encrypt-on-ubuntu-20-04
+// https://bmtechtips.com/install-free-ssl-certificate-digitalocean-apache2.htm
+
+
+// https://www.digitalocean.com/community/tutorials/how-to-install-mongodb-on-ubuntu-20-04
+
+
+
+
+--------------- enable gzip ----------------------------- 
+etc/nginx/nginx.conf
+remove comment
+client_max_body_size 100M;
+
+--------------ffmpeg------------------
+sudo apt update 
+sudo apt install ffmpeg 
+ffmpeg -version 
+
+--------------------------- grant user permission -------------------
+sudo usermod -a -G www-data ubuntu
+exit
+-------------------------------------
+sudo chown ubuntu:www-data /var/www
+sudo chmod 2775 /var/www
+find /var/www -type d -exec sudo chmod 2775 {} \;
+find /var/www -type f -exec sudo chmod 0664 {} \;
+
+--------------------------------------
+sudo chown ubuntu:www-data /etc/nginx/
+sudo chmod 2775 /etc/nginx
+find /etc/nginx -type d -exec sudo chmod 2775 {} \;
+find /etc/nginx -type f -exec sudo chmod 0664 {} \;
+
+--------------------------------------
+sudo chown ubuntu:www-data /etc/nginx/sites-available/
+sudo chmod 2775 /etc/nginx/sites-available/
+find /etc/nginx/sites-available/ -type d -exec sudo chmod 2775 {} \;
+find /etc/nginx/sites-available/ -type f -exec sudo chmod 0664 {} \;
+
+
+

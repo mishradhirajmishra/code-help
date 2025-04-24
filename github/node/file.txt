@@ -1,0 +1,157 @@
+==============================Read File ===================
+const http = require('http');
+const fs = require('fs');
+http.createServer((req,res)=>{
+  fs.readFile('./tmp/world.html',(err,data)=>{
+    if(err){ console.log(err)}
+    else{
+  res.writeHead(200,{'Content-Type':'text/html'});
+  res.write(data);
+  res.end();
+}
+})
+}).listen(3000);
+============================================================
+=====================Create File ==========================
+fs.appendFile('mynewfile1.txt', 'Hello content!', callback)
+fs.open('mynewfile2.txt', 'w',callback)
+fs.writeFile('mynewfile1.txt', 'Hello content!', callback)
+===========================================================
+=====================Update File ==========================
+fs.appendFile('mynewfile1.txt', 'Hello content!', callback)
+fs.writeFile('mynewfile1.txt', 'Hello content!', callback)
+===========================================================
+======================Delete File ========================
+fs.unlink('mynewfile2.txt', callback)
+==========================================================
+======================Rename File ========================
+fs.rename('mynewfile1.txt', 'myrenamedfile.txt',callback)
+==========================================================
+=============== delete folder containing folder===========
+const fs = require("fs");
+fs.readdir('./tutorial',(err,files)=>{
+    if(err){
+      console.log(err);
+    }
+    else{
+      console.log(files);
+      for(let file of files){
+          fs.unlink('./tutorial/'+file,(err)=>{
+            if(err){
+              console.log(err);
+            }
+            else{
+              console.log(file +' deleted successfully')
+            }
+          })
+      }
+      fs.rmdir('./tutorial',(err)=>{
+        if(err){
+          console.log(err);
+        }
+        else{
+          console.log('folder deleted successfully')
+        }
+      })
+    }
+})
+=============================================================
+============== create folder ================================
+const fs = require("fs");
+
+fs.mkdir('./tutorial',(err)=>{
+  if(err){
+    console.log(err);
+  }
+  else{
+    console.log('created successfully');
+  }
+})
+=============================================================
+===============delete folder=================================
+      fs.rmdir('./tutorial',(err)=>{
+        if(err){
+          console.log(err);
+        }
+        else{
+          console.log('folder deleted successfully')
+        }
+      })
+============================================================
+const fs = require("fs");
+const readStream = fs.createReadStream('./abc.txt','utf8');
+readStream.on('data',(chank)=>{
+  console.log(chank);
+})
+============================================================
+const fs = require("fs");
+const readStream = fs.createReadStream('./abc.txt','utf8');
+const writeStream = fs.createWriteStream('./abc2.txt');
+...............................
+readStream.on('data',(chank)=>{
+  writeStream.write(chank);
+})
+...............................
+or
+readStream.pipe(writeStream)
+============================================================
+=====================compress file==========================
+const fs = require("fs");
+const zlib =  require('zlib');
+const gzip = zlib.createGzip();
+const readStream = fs.createReadStream('./abc.txt','utf8');
+const writeStream = fs.createWriteStream('./abc2.txt.gz');
+readStream.pipe(gzip).pipe(writeStream);
+============================================================
+==================uncompress file===========================
+const fs = require("fs");
+const zlib =  require('zlib');
+const gunzip = zlib.createGunzip();
+const readStream = fs.createReadStream('./abc2.txt.gz');
+const writeStream = fs.createWriteStream('./abc3.txt');
+readStream.pipe(gunzip).pipe(writeStream);
+============================================================
+const http = require('http');
+const fs = require('fs');
+http.createServer((req,res)=>{
+  const readStream = fs.createReadStream('./abc.html','utf8');
+    res.writeHead(200,{'Content-Type':'text/html'});
+    readStream.pipe(res);
+    // res.end()
+}).listen(3000);
+============================================================
+const http = require('http');
+const fs = require('fs');
+http.createServer((req,res)=>{
+  const readStream = fs.createReadStream('./abc.json','utf8');
+    res.writeHead(200,{'Content-Type':'application/json'});
+    readStream.pipe(res);
+    // res.end()
+}).listen(3000);
+============================================================
+============================================================
+============================================================
+============================================================
+============================================================
+============================================================
+============================================================
+============================================================
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

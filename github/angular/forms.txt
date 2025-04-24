@@ -1,0 +1,363 @@
+====================================================================
+Text Validation
+<input id="name" #name="ngModel" [class.is-invalid]="name.invalid && name.touched" class="form-control" type="text" name="name" [(ngModel)]="user.name" required>
+<small class="form-text text-danger" *ngIf="name.invalid && name.touched">Name Field is required</small>       </div>
+Email Validation with email 
+       <input id="email" #email="ngModel" [class.is-invalid]="email.invalid && email.touched"  class="form-control" type="email" email name="email" [(ngModel)]="user.email" required>
+       <small class="form-text text-danger" *ngIf="email.errors.required">Email is required</small>
+       <small class="form-text text-warning" *ngIf="email.errors.email">Email is invalid</small>
+Email Validation with Pattern 
+         <input id="email" #email="ngModel" [class.is-invalid]="email.invalid && email.touched" class="form-control"
+           type="email"  name="email" [(ngModel)]="user.email" required pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}$">
+         <small class="form-text text-danger" *ngIf="email?.errors?.required">Email is required</small>
+         <small class="form-text text-warning" *ngIf="email?.errors?.pattern">Email is invalid</small>
+
+
+
+====================================================================
+Template Driven form
+App.module.ts
+import {FormsModule} from '@angular/forms'
+ imports: [ FormsModule ],
+App.componet.ts
+import {NgForm} from'@angular/forms';
+ Register(regForm:NgForm){
+     Debugger           // F10 used with debigue
+   console.log(regForm.controls.firstname.value);
+   console.log(regForm.controls.lastname.value);
+   console.log(regForm.controls.email.value);
+   console.log(regForm);
+}
+App.componet.html
+   <form #regForm="ngForm" (ngSubmit)="Register(regForm)">
+ <input id="fname" class="form-control" name="fname" type="text" required ngModel>
+ <input id="lname" class="form-control" type="text" name="lname" required ngModel>
+ <input id="email" class="form-control" type="email" name="email" ngModel  required email #email="ngModel">
+ <small *ngIf="email.touched && !email.valid" class="form-text text-muted">Please Enter Valid Email</small>
+  <button class="btn btn-dark" type="submit" [disabled]="!regForm.valid" id="Register">Register</button>
+   </form>
+===========================================================================================================
+Template Driven form with service & validation
+
+App.module.ts
+import {FormsModule} from '@angular/forms'
+import {HttpClientModule } from '@angular/common/http';
+ imports: [ FormsModule,HttpClientModule],
+User class
+export class User {
+   public constructor(
+       public name: string,
+       public email: string,
+       public phone: number,
+       public subject: string,
+       public time: string,
+       public subscribe:boolean
+   ) { }
+}
+enroll.service
+import { Injectable } from '@angular/core';
+import {HttpClient} from '@angular/common/http';
+import {User} from './user';
+import { from } from 'rxjs';
+import { userInfo } from 'os';
+
+@Injectable({
+ providedIn: 'root'
+})
+export class EnrollService {
+ _url='';
+ constructor(private _http:HttpClient) { }
+ enroll(user:User){
+   return this._http.post<any>(this._url,user);
+ }
+}
+
+App.componet.ts
+import { Component } from '@angular/core';
+import {NgForm} from '@angular/forms';
+import {EnrollService}from './enroll.service';
+import { from } from 'rxjs';
+import {User} from './user';
+
+@Component({
+ selector: 'app-root',
+ templateUrl: './app.component.html',
+ styleUrls: ['./app.component.css']
+})
+export class AppComponent {
+ title = 'my-app';
+ constructor(private _enrollService:EnrollService){}
+ subjects=['english','hindi','urdu']
+ user=new User('dhiraj','dk@gmail.com',8707526612,'hindi','morning',false);
+ onSubmit(){
+      this._enrollService.enroll(this.user)
+      .subscribe(
+        data=>console.log('success',data),
+        error=>console.log('error',error)
+      )
+
+ }
+}
+App.componet.html
+     <form #userForm="ngForm" (ngSubmit)="onSubmit()">
+       <div class="form-group" novalidate>
+
+         <label for="name">Name</label>
+         <input id="name" #name="ngModel" [class.is-invalid]="name.invalid && name.touched" class="form-control"
+           type="text" name="name" [(ngModel)]="user.name" required>
+         <small class="form-text text-danger" *ngIf="name.invalid && name.touched">Name Field is required</small>
+       </div>
+
+       <div class="form-group">
+         <label for="email">Email</label>
+         <input id="email" #email="ngModel" [class.is-invalid]="email.invalid && email.touched" class="form-control"
+           type="email" name="email" [(ngModel)]="user.email" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}$"
+           required>
+         <small class="form-text text-danger" *ngIf="email?.errors?.required">Email is required</small>
+         <small class="form-text text-warning" *ngIf="email?.errors?.pattern">Email is invalid</small>
+       </div>
+       <div class="form-group">
+         <label for="phone">Phone</label>
+         <input id="phone" #phone="ngModel" required class="form-control"
+           [class.in-valid]="(phone?.errors?.required && phone.touched) || (phone?.errors?.pattern && phone.touched)"
+           name="phone" type="tel" [(ngModel)]="user.phone" pattern="^\d{10}$">
+         <small class="form-text text-danger" *ngIf="phone?.errors?.required">Phone is required</small>
+         <small class="form-text text-warning" *ngIf="phone?.errors?.pattern">Phone is invalid</small>
+       </div>
+       <div class="form-group">
+         <label for="subject">Subject</label>
+         <select id="subject" #subject="ngModel" name="subject"
+           [class.is-invalid]="subject.invalid && subject.untouched" class="form-control" [(ngModel)]="user.subject"
+           required>
+           <option value="">Please</option>
+           <option *ngFor="let subject of subjects">{{subject}}</option>
+         </select>
+         <small class="form-text text-danger" *ngIf="subject?.errors?.required">Subject is required</small>
+       </div>
+       <div class="form-check">
+         <input id="subs" #subscribe="ngModel" class="form-check-input "
+           [class.is-invalid]="subscribe.invalid && subscribe.untouched" type="checkbox" name="subscribe"
+           [(ngModel)]="user.subscribe" required>
+         <label for="subs" class="form-check-label">Subscribe</label>
+         <small class="form-text text-danger" *ngIf="subscribe.invalid">Subject is required</small>
+       </div>
+
+       <div class="form-check form-check-inline" >
+         <input id="my-input" #time="ngModel" name="time" class="form-check-input" type="radio" [(ngModel)]="user.time" value="morning"
+           required>
+         <label for="my-input" class="form-check-label">Morning</label>
+         <input id="my-input"  #time="ngModel"  name="time"  name="time" class="form-check-input" type="radio" value="evening" [(ngModel)]="user.time"
+           required>
+         <label for="my-input" class="form-check-label">Evening</label>         
+       </div>
+       <small class="form-text text-danger" *ngIf="time.untouched">required field</small>
+       <div class="form-group">
+         <button class="btn btn-dark " type="submit" [disabled]="userForm.form.invalid">Submitt</button>
+       </div>
+
+     </form>
+===================================================================================
+Reactive form with  Form Group & form Control
+App.module.ts
+import {ReactiveFormsModule}from '@angular/forms';
+ imports: [ReactiveFormsModule],
+App.component.ts
+import { Component } from '@angular/core';
+import {FormGroup,FormControl} from '@angular/forms'
+import { from } from 'rxjs';
+import { registerContentQuery } from '@angular/core/src/render3';
+@Component({
+ selector: 'app-root',
+ templateUrl: './app.component.html',
+ styleUrls: ['./app.component.css']
+})
+export class AppComponent {
+ title = 'my-app';
+ reg = new FormGroup({
+   name : new FormControl('dhiraj'),
+   email : new FormControl('dk@gmail.com'),
+   password  : new FormControl(''),
+   cpassword : new FormControl(''),
+   address : new FormGroup({
+      city : new FormControl('lko'),
+      state : new FormControl('up'),
+      pin : new FormControl('123')
+   })
+ });
+ loadData(){
+   this.reg.setValue({
+     name : 'ramesh',
+     email : 'dk1@gmail.com',
+     password  : '1111',
+     cpassword : '1111',
+     address : {
+        city : 'gkp',
+        state : 'up',
+        pin : '22222222222'
+   }
+ });
+}
+}
+App.component.Html
+     <form [formGroup]="reg">     
+       <div class="form-group">
+         <label for="name">Name</label>
+         <input formControlName="name" id="name" name="name" class="form-control" type="text">
+       </div>
+       <div class="form-group">
+         <label for="email">Email</label>
+         <input formControlName="email" id="email" class="form-control" type="email" name="email">
+       </div>
+       <div class="form-group">
+         <label for="pass">Password</label>
+         <input id="pass" formControlName="password" class="form-control" name="password" type="password">
+       </div>
+       <div class="form-group">
+         <label for="cpass">Confirm Password</label>
+         <input id="cpass" formControlName="cpassword" class="form-control" type="password" name="cpassword">
+       </div>
+       <div formGroupName="address">
+         <div class="form-group">
+           <label for="city">City</label>
+           <input id="city" formControlName="city" class="form-control" type="text" name="city">
+         </div>
+         <div class="form-group">
+             <label for="state">State</label>
+             <input id="state" formControlName="state" class="form-control" type="text" name="state">
+           </div>
+           <div class="form-group">
+               <label for="pin">Pin</label>
+               <input id="pin" formControlName="pin" class="form-control" type="number" name="pin">
+             </div>
+       </div>
+       <div class="form-group">
+         <button class="btn btn-success" type="submit">Send</button>&nbsp;
+         <button class="btn btn-warning" type="submit" (click)="loadData()">Load</button>
+       </div>
+     </form>
+==================================================================================
+Reactive form with  Form Group & form Control
+App.module.ts
+import {ReactiveFormsModule}from '@angular/forms';
+ imports: [ReactiveFormsModule],
+App.component.ts
+import { Component } from '@angular/core';
+import {FormGroup,FormControl} from '@angular/forms'
+import { from } from 'rxjs';
+import { registerContentQuery } from '@angular/core/src/render3';
+@Component({
+ selector: 'app-root',
+ templateUrl: './app.component.html',
+ styleUrls: ['./app.component.css']
+})
+export class AppComponent {
+ title = 'my-app';
+ reg = new FormGroup({
+   name : new FormControl('dhiraj'),
+   email : new FormControl('dk@gmail.com'),
+   password  : new FormControl(''),
+   cpassword : new FormControl(''),
+   address : new FormGroup({
+      city : new FormControl('lko'),
+      state : new FormControl('up'),
+      pin : new FormControl('123')
+   })
+ });
+ loadData(){
+   this.reg.setValue({
+     name : 'ramesh',
+     email : 'dk1@gmail.com',
+     password  : '1111',
+     cpassword : '1111',
+     address : {
+        city : 'gkp',
+        state : 'up',
+        pin : '22222222222'
+   }
+ });
+}
+}
+
+====================================================================
+custom validation
+name-validator.ts
+import {AbstractControl} from '@angular/forms';
+export function nameValidator(control:AbstractControl):{[key:string]:any}|null{
+   const forbiden= /admin/.test(control.value);
+   return  forbiden ? {'forbidenName' :{value : control.value}}:null ;
+}
+ name:['dhiraj',[Validators.required,Validators.minLength(5),nameValidator]],app.component.ts
+<small class="form-text text-danger" *ngIf="name.errors?.forbidenName">{{name.errors?.forbidenName.value}} is not allowed</small>  html
+
+
+custom validation with parameter
+name-validator.ts
+import {AbstractControl, ValidatorFn} from '@angular/forms';
+
+export function nameValidator(forbiden:RegExp):ValidatorFn{
+   return (control:AbstractControl):{[key:string]:any}|null =>{
+       const forbidenName= forbiden.test(control.value);
+       return  forbidenName ? {'forbidenName' :{value : control.value}}:null ;
+   }
+
+}
+
+name:['dhiraj',[Validators.required,Validators.minLength(5),nameValidator(/password/)]] app.component.ts
+<small class="form-text text-danger" *ngIf="name.errors?.forbidenName">{{name.errors?.forbidenName.value}} is not allowed</small>  html
+
+custom password validation with group label
+password-validator.ts
+import {AbstractControl} from '@angular/forms';
+export function passwordValidator(control:AbstractControl):{[key:string]:any}|null{
+   const password=control.get('password');
+   const cpassword=control.get('cpassword');
+   if(password.pristine || cpassword.pristine){return null}
+   return password && cpassword && password.value != cpassword.value ? {'misMatch':true}:null;
+}
+
+
+App.component.ts
+ constructor(private fb:FormBuilder){
+   this.user=this.fb.group({
+     name:['dhiraj',[Validators.required,Validators.minLength(5),nameValidator(/password/)]],
+     email:['dhiraj@gmail.com'],
+     password:[''],
+     cpassword:[''],
+     address: this.fb.group({
+       city:['lko'],
+       state:['up'],
+       pin:['123456']
+     })
+    
+   },{validators:passwordValidator});
+ }
+
+ Html
+<form [formGroup]="user">
+     <div class="form-group">
+       <label for="password">Text</label>
+       <input id="password"  formControlName="password" class="form-control" type="text">
+     </div>
+     <div class="form-group">
+       <label for="cpassword">Text</label>
+       <input id="cpassword"  [class.is-invalid]="user.errors?.misMatch" formControlName="cpassword" class="form-control" type="text">
+       <small class="form-text text-danger" *ngIf="user.errors?.misMatch">password is not equal</small>
+
+     </div>
+
+
+
+
+
+
+
+
+
+
+
+    
+
+
+
+
+

@@ -1,0 +1,118 @@
+curl -fsSL https://get.docker.com -o get-docker.sh
+sh get-docker.sh
+--------------------------------------------------
+ apt-get update && apt-get install -y iputils-ping
+ sudo docker info
+ ================================================================
+ docker pull ubuntu
+ docker images
+ docker rmi <docker Id>
+ docker rmi -f <docker Id>
+ docker image prune
+ docker run -it -d --name ubuntu-container -p 80:80 ubuntu 
+ sudo docker run -it -d --name u-n-image-container -p 80:80 3252cf63c636
+ docker ps
+ docker ps -a // list all including stoped 
+ docker exec -it 243f490e111f bash  
+sudo docker container inspect <container name>
+
+ docker start <docker service Id>
+ docker stop <docker service Id>
+ docker kill <docker service Id>
+ docker restart <docker service Id>
+ docker rm <docker service Id>
+ docker rm -f <docker service Id>
+docker commit 243f490e111f commited-ubuntu
+docker tag <old name> <new name>
+sudo docker push dhiraj85/nginx-alpine-image
+
+docker login
+docker push <new name>
+
+-------------------------------------
+FROM ubuntu
+LABEL maintainer="abc@gmail.com"
+RUN apt-get update && apt install nginx -y
+WORKDIR /app
+COPY ./index.html .
+CMD ["service","nginx","start"]
+----------------------------------------
+sudo docker build -t ub-ng-image .
+------------------------------------
+sudo docker volume create <volume name>
+sudo docker volume ls
+sudo docker volume inspect <volume name>
+sudo docker volume rm <volume name>
+sudo docker volume prune
+
+----------------------------------------------------------------
+sudo docker run -it -d --name u-n-image-container --mount source=batman,target=/apps -p 80:80 dhiraj85/nginx-alpine-image
+
+ sudo docker run -it -d --name u-n-image-container --mount source=batman,target=/apps,readonly -p 80:80 dhiraj85/nginx-alpine-image
+
+ sudo docker run -it -d --name vol1-n-image-container --volume flash:/apps -p 8080:8080 dhiraj85/nginx-alpine-image
+------------------------------------------------------------------------------------------------------------------------------
+sudo docker run -it -d --name u-n-image-container --mount type=bind,source=$(pwd)/abc,target=/apps -p 80:80 dhiraj85/nginx-alpine-image
+
+sudo docker run -it -d --name u-n-image-container --mount type=bind,source=$(pwd)/abc,target=/apps,readonly -p 80:80 dhiraj85/nginx-alpine-image
+------------------------------------------------------------------------------------------------------------------------------------------------
+sudo docker run -it -d --name u-n-image-container --mount type=tmpfs,source=$(pwd)/abc,target=/apps -p 80:80 dhiraj85/nginx-alpine-image
+
+sudo docker run -it -d --name u-n-image-container  -v $(pwd):/apps -v /apps/node_module -p 3000:3000 dhiraj85/nginx-alpine-image
+sudo docker run -it -d --name u-n-image-container  -v $(pwd):/apps:ro -v /apps/node_module -p 3000:3000 dhiraj85/nginx-alpine-image
+========================================================================================
+sudo docker network create --driver <driver> <name>
+ sudo docker network create --driver bridge custom-bridge
+
+ sudo docker network ls
+
+sudo docker network inspect 
+
+sudo docker run -it -d --network custom-bridge  --name unic1 d13c942271d6
+sudo docker run -it -d --network host  --name unic1 d13c942271d6
+sudo docker run -it -d --network none  --name unic1 d13c942271d6
+================================ overlay ==============================
+sudo docker swarm init // to create swarm manager at first server
+--------------------------------------------------------------------------
+ docker swarm join --token SWMTKN-1-3v1ct1k0xpye1gc0ueizoibi3lsbx4316lxn5n9hvo2g8pm13h-3wm9g7sd59rsv5n1117r4yhp3 192.168.65.3:2377
+//To add a manager to this swarm, run 'docker swarm join-token manager' and follow the instructions.
+-------------------------------------------------------------------------------------------------
+// on another server paste  above generated code of manager swarm that will be joined as worker
+// create overlay at master server
+ sudo docker network create --driver overlay overlay-network
+  sudo docker service create --name overlay-service --network overlay-network --replicas 3 <image>
+  sudo docker service ls
+sudo docker service rm <service>
+sudo docker service ps overlay-service
+
+============================ DOCKER COMPOSE ===================
+// create a folder like project in in this folder create docker-compose.yml
+sudo docker-compose up
+sudo docker-compose down
+============================ DOCKER swarm ===================
+// at manager node
+docker swarm init --advertise-addr <manager node ip>
+............................................................
+ docker swarm join --token SWMTKN-1-3v1ct1k0xpye1gc0ueizoibi3lsbx4316lxn5n9hvo2g8pm13h-3wm9g7sd59rsv5n1117r4yhp3 192.168.65.3:2377
+............................................................
+
+// paste above join code to all worker node
+
+sudo docker node ls
+
+// within worker node 
+
+sudo docker swarm leave    //this node desconnect from manager node
+sudo docker swarm leave --force   //this close swarm from  manager node
+
+sudo docker swarm join-token worker // at manager node to get token again for join worker
+sudo docker swarm join-token manager // at manager node to get token again for join more manager
+sudo docker node rm <node id> // remove down node
+
+
+
+
+ 
+//---------------  run jankins
+docker run -it -d -p 8080:8080 --name=jenkins-master -d jenkins/jenkins
+

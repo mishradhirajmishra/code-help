@@ -1,0 +1,50 @@
+                <form [formGroup]="profile" class="w100">
+                        <mat-form-field class="w100">
+                                <input type="text" placeholder="Pick one" aria-label="Number" matInput
+                                        formControlName="name" [matAutocomplete]="auto">
+                                <mat-autocomplete #auto="matAutocomplete">
+                                        <mat-option *ngFor="let option of filteredOptions | async" [value]="option">
+                                                {{option}}
+                                        </mat-option>
+                                </mat-autocomplete>
+                        </mat-form-field>
+                </form>
+
+
+==================================== component.ts ==================================
+
+import { Component, OnInit } from '@angular/core';
+import { FormBuilder, FormControl} from "@angular/forms";
+import { startWith, map } from 'rxjs/operators';
+
+import { Observable } from 'rxjs/internal/Observable';
+@Component({
+  selector: 'app-forms',
+  templateUrl: './forms.component.html',
+  styleUrls: ['./forms.component.scss']
+})
+export class FormsComponent implements OnInit {
+  title:String ='Forms';
+  constructor(private fb:FormBuilder) { } 
+  options: string[] = ['One', 'Two', 'Three'];
+  filteredOptions: Observable<string[]>;
+  ngOnInit() {
+   this.filteredOptions=  this.getName.valueChanges.pipe(
+          startWith(''),
+          map(value => this._filter(value))
+        )
+  }
+  private _filter(value: string): string[] {
+    const filterValue = value.toLowerCase();
+    return this.options.filter(option => option.toLowerCase().includes(filterValue));
+  }
+
+  
+  get getName(){
+    return this.profile.get('name');
+  }
+   profile=this.fb.group({
+    name:[''],
+    email:[''],
+   })
+}

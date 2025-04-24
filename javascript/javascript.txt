@@ -1,0 +1,198 @@
+JavaScript Engine 
+-----------------------------
+V8 =>  Crome , Edge , Opera
+SpiderMonkey => Firfox
+JavaScriptCore (also known as Nitro, SquirrelFish, and SquirrelFish Extreme) => Safari
+--------------------------------------------------
+var => 
+either function-scoped or global-scoped (not block scoped )
+if declared within block can be used out side
+if declared within function can not be used out side 
+var can be re-declared and even can be asigned begore declared for the same scope 
+---------------------------------------------------
+IIFE => “immediately-invoked function expressions”
+(function() { ... })();
+----------------------------------------------
+// premetive type
+1-Number   (2^53-1) to - (2^53-1) ; Number()
+2- Bigint  => value is created by appending n to the end of an integer 
+               const bigInt = 1234567890123456789012345678901234567890n;
+3-String    String()
+4-Boolean   0,"",Null,NaN,undefined, are false and all other are true
+5-Null
+6-Undefind 
+7-Symbol
+
+// refrence type
+1-Array
+2-Object
+----------------------
+typeof undefined // "undefined"
+typeof 0 // "number"
+typeof 10n // "bigint"
+typeof true // "boolean"
+typeof "foo" // "string"
+typeof Symbol("id") // "symbol"
+typeof Math // "object"  (1)
+typeof null // "object"  (2)     // incorrect
+typeof alert // "function"  (3)  // incorrect
+---------------------------------------------------------------------------
+ ==  convert  each opeerand into no before compression  (alert( '' == false ); // true)
+ ===     not convet before compression  (alert( '' === false ); // false)
+---------------------------------------------------------
+// global
+isFinite()
+isNaN()
+----------------------------------------------------------------------------
+// number
+EPSILON
+MIN_SAFE_INTEGER
+MAX_SAFE_INTEGER
+Number.isInteger()
+Number.isSafeInteger()
+
+----------------------------------------------------------------------------
+//  string method 
+slice(start index, end index)  //accept negative index
+substring(start, end) //not accept negative index
+substr(start, length) 
+indexOf('string',start index) //returns the index of (the position of) the first occurrence of a specified text in a string  , return 1/-1
+lastIndexOf('string',start index) //method returns the index of the last occurrence of a specified text in a string,  , return 1/-1
+search('string')  // similar to above but not take second argument  
+startsWith('string') // return boolean
+endsWith() // return boolean
+let text = "The rain in SPAIN stays mainly in the plain";
+text.match(/ain/gi); // return  ['ain', 'ain', 'ain']
+let text = "Hello world, welcome to the universe.";
+text.includes("world"); // return boolean
+Array.from("ABCDEFG")   // Returns [A,B,C,D,E,F,G]
+
+let str = "5";str = str.padStart(4,0);// result is 0005
+let str = "5";str = str.padEnd(4,0);// result is 5000
+------------------------------------------------
+=> alert( null === undefined ); // false
+=> alert( null == undefined ); // true
+=> For maths and other comparisons < > <= >=
+null/undefined are converted to numbers: null becomes 0, while undefined becomes NaN.
+alert( null > 0 );  // (1) false
+alert( null == 0 ); // (2) false
+alert( null >= 0 ); // (3) true
+=>Comparisons convert null to a number, treating it as 0
+=>equality check == for undefined and null is defined such that, without any conversions
+alert( undefined > 0 ); // false (1)
+alert( undefined < 0 ); // false (2)
+alert( undefined == 0 ); // false (3)
+---------------------------------------------
+Nullish coalescing operator '??'
+?? returns the first argument if it’s not null/undefined. Otherwise, the second one.
+.......................
+let user;
+alert(user ?? "Anonymous"); // Anonymous (user is undefined)
+.........................
+let user = "John";
+alert(user ?? "Anonymous"); // John (user is not null/undefined)
+-----------------------------
+|| returns the first truthy value.
+?? returns the first defined value.
+let height = 0;
+
+alert(height || 100); // 100
+alert(height ?? 100); // 0
+
+=> No break/continue to the right side of ‘?’
+if (i > 5) {  alert(i);} else {  continue;}
+(i > 5) ? alert(i) : continue; // continue isn't allowed here
+--------------------------------------------------
+
+========================================================
+//  array method 
+map() // return array with manimulated value;
+filter() // return array with filtered value;value will be returned if callback return true. 
+find() // return element of first occerence of truthy;
+some() // return true/false if atleast one element satisfied the condition;
+every()  // return true/false if all element satisfied the condition;
+reduce((accumulator,element)=>{return accumulator+element},start value of accumulator); // reduce total element with singel value return
+sort((a,b)=>a-b)// accending order 
+sort((a,b)=>b-a)// decending order 
+fill(value,start index, end index +1) // fill array with some valus  cons arr == new Array(10).fill(0)
+       // replace range of value and fill with a value
+array.splice(start index,no ofitem to be removed,'inserte item') 
+const fruits = ["Banana", "Orange", "Apple", "Mango"];
+fruits.includes("Mango"); // is true
+------------------------------------------------------------
+// set 
+// A JavaScript Set is a collection of unique values.
+
+new Set()	Creates a new Set
+add()	Adds a new element to the Set
+delete()	Removes an element from a Set
+has()	Returns true if a value exists in the Set
+forEach()	Invokes a callback for each element in the Set
+values()	Returns an iterator with all the values in a Set
+Property	Description
+size	Returns the number of elements in a Set
+
+const letters = new Set(["a","b","c"]);
+let text = "";
+letters.forEach (function(value) {
+  text += value + "<br>";
+})
+
+for (const x in letters.values()) {
+  text += x;
+}
+-------------------------------------------------------------------------
+set and array conversion
+
+let set = new Set(array)
+let array = Array.from(set)
+
+
+
+--------------------------------------------------------------------
+//  Map
+A Map holds key-value pairs where the keys can be any datatype.
+
+
+-------------------------------------------------------
+// object 
+Object.entries(person)  // return  key value pair in array .
+for (let [key,value] of Object.entries(fruits)) {}
+Object.entries() also makes it simple to convert objects to maps:
+const myMap = new Map(Object.entries(fruits));
+
+Object.values(person)
+
+--------------------------------------------
+obj2=Object.create(obj1) // obj2.__proto__   access  obj1 prpprty and can access dirsctly if obj has not same Property
+                         // set __proto__ value , set __proto__ value as object 
+const methodList = { fun1(){ console.log(this.propert1) },fun2(x,y){},fun3(console.log(this.propert1,x,y)){},fun4(){}}
+const userInfo = {
+     let user = Object.create(methodList); // another way let user = Object.create(userInfo.prototype);
+     user.propert1 = "dddd"
+     ......................
+}
+
+// another way to add object to __proto__ is using prototype
+userInfo.prototype.fun1(){ console.log(this.propert1) }
+
+
+userInfo.fun1()  // display dddd
+
+----------------------------------------
+// call apply bind 
+
+userInfo.fun2.call(userInfo,'x','y') //  call function
+userInfo.fun2.apply(userInfo,['x','y']) //  call function
+
+let funxyz= userInfo.fun1.bind(userInfo) //  call function
+  funxyz() // can be called with expected result
+
+  ----------------------------
+  new keyword
+// create empty object  this={}
+// returnthis empty object
+// add prototype refrance to __proto__ automatically  no need of this=Object.create(obj1)
+
+// __proto__ equivqent to [[prototype]]
+// call constractor function

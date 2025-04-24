@@ -1,0 +1,81 @@
+========================================================
+                  controller.php
+========================================================
+<?php
+defined('BASEPATH') OR exit('No direct script access allowed');
+
+class Admin extends CI_Controller {
+    public  function __construct()
+    {
+        parent::__construct();
+        $this->load->helper('url');
+        $this->load->helper('form');
+        $this->load->model('admin_model');
+    }
+
+    public function index()
+    {
+       $this->load->view('main');
+    }
+    public function gray()
+    {
+        $this->load->view('gray');
+    }
+    public function yellow()
+    {
+        $this->load->view('yellow');
+    }
+}
+
+
+========================================================
+                  view.php
+========================================================
+........................................................
+=>main.php
+........................................................
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Image Upload</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+</head>
+<body>
+<div class="container-fluid">
+    <div class="col-md-12" style="background-color: red; height: 100px;">
+        <button  class="btn btn-success" onclick="loadview('gray')"> Gray</button>
+        <button  class="btn btn-warning" onclick="loadview('yellow')">Yellow</button>
+    </div>
+<div id="main_container">
+
+</div>
+    <div class="col-md-12" style="background-color: blue; height: 100px;">
+        <h1>Footer</h1>
+    </div>
+</div>
+<script>
+    function  loadview(page) {
+        var url='<?php echo base_url() ?>index.php/admin/'+page;
+        $("#main_container").load(url);
+    }
+</script>
+</body>
+</html>
+........................................................
+=>gray.php
+........................................................
+<div class="col-md-12" style="background-color: gray; height: 100px;">
+    <h1>Gray</h1>
+</div>
+
+........................................................
+=>yellow.php
+........................................................
+<div class="col-md-12" style="background-color: yellow; height: 100px;">
+    <h1>Yeloow</h1>
+</div>

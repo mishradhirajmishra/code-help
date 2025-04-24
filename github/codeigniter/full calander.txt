@@ -1,0 +1,190 @@
+============================================================================================
+database
+============================================================================================
+CREATE TABLE `events` (
+  `id` int(11) NOT NULL PRIMARY KEY AUTO_INCREMENT,
+  `title` varchar(255) NOT NULL,
+  `start_date` datetime NOT NULL,
+  `end_date` datetime NOT NULL,
+  `running_year` varchar(100) NOT NULL
+) 
+============================================================================================
+controller
+============================================================================================
+    function event(){
+        $data['result'] = $this->admin_model->all_event();
+        foreach ($data['result'] as $key => $value) {
+            $data['data'][$key]['id'] = $value->id;
+            $data['data'][$key]['title'] = $value->title;
+            $data['data'][$key]['start'] = $value->start_date;
+            $data['data'][$key]['end'] = $value->end_date;
+            $data['data'][$key]['backgroundColor'] = "#b8860b";
+        }
+        $this->load->view('admin/event/event', $data);
+    }
+    function add_event(){
+        $data=$this->input->post();
+        $x= $this->admin_model->add_event($data);
+        print_r($x);
+    }
+    function update_event(){
+        $data=$this->input->post();
+        $x= $this->admin_model->update_event($data);
+        print_r($x);
+    }
+    function delete_event(){
+        $id=$this->input->post('id');
+        $x= $this->admin_model->delete_event($id);
+        print_r($x);
+    }
+============================================================================================
+          model
+============================================================================================
+  function add_event($data)
+    {
+        $data['running_year	'] = $_SESSION['running_year'];
+        $this->db->insert('events', $data);
+        if ($this->db->affected_rows() > 0) {
+            return TRUE;
+        } else {
+            return FALSE;
+        }
+    }
+
+    function update_event($data)
+    {
+        $this->db->where('id', $data['id']);
+        unset($data['id']);
+        $this->db->update('events', $data);
+        if ($this->db->affected_rows() > 0) {
+            return TRUE;
+        } else {
+            return FALSE;
+        }
+    }
+
+    function delete_event($id)
+    {
+        $data = array('id' => $id);
+        $x = $this->db->delete('events', $data);
+        return $x;
+    }
+
+    function all_event()
+    {
+        $data = array('running_year' => $_SESSION['running_year']);
+        return $this->db->get_where("events",$data)->result();
+    }
+=============================================================================================
+  view.php
+=============================================================================================
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.9.0/fullcalendar.min.css" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" />
+<h1 class="page-title">Event</h1>
+<h6><a  onclick="loadview('event')" > Page Refresh</a></h6>
+<!--=====================================-->
+<div class="guardian">
+    <div class="col-sm-12">
+        <div id="calendar"></div>
+    </div>
+</div>
+<!--=====================================-->
+<script type="text/javascript">
+    var event = <?php echo json_encode($data) ?>;
+    var date = new Date();
+    var d    = date.getDate(),
+        m    = date.getMonth(),
+        y    = date.getFullYear()
+
+    $('#calendar').fullCalendar({
+        header    : {
+            left  : 'prev,next today',
+            center: 'title',
+            right : 'month,agendaWeek,agendaDay'
+        },
+        buttonText: {
+            today: 'today',
+            month: 'month',
+            week : 'week',
+            day  : 'day'
+        },
+        events    : event,
+        selectable :true,
+        selectHelper : true,
+        select : function (start,end,allDay) {
+            var title = prompt("Enter Event Title");
+            if (title){
+                var start = $.fullCalendar.formatDate(start,"Y-MM-DD HH:mm:ss");
+                var end = $.fullCalendar.formatDate(end,"Y-MM-DD HH:mm:ss");
+                $.ajax({
+                    url: '<?php echo base_url()?>index.php/admin/add_event',
+                    type:"POST",
+                    data:{title:title,start_date:start,end_date:end},
+                    success: function () {
+                        $('#subsmsg').html("<div class='alert alert-danger '><a href='#' class='close' data-dismiss='alert' aria-label='close'>&times;</a> Added Successfully <div>");
+                        loadview('event')
+                    },
+                    error: function () { alert("fail");
+                    }
+                });
+
+            }
+
+        },
+        editable:true,
+        eventResize : function(event) {
+            var start = $.fullCalendar.formatDate(event.start,"Y-MM-DD HH:mm:ss");
+            var end = $.fullCalendar.formatDate(event.end,"Y-MM-DD HH:mm:ss");
+            var title = event.title;
+            var id = event.id;
+            $.ajax({
+                url: '<?php echo base_url()?>index.php/admin/update_event',
+                type:"POST",
+                data:{title:title,start_date:start,end_date:end,id:id},
+                success: function () {
+                    $('#subsmsg').html("<div class='alert alert-danger '><a href='#' class='close' data-dismiss='alert' aria-label='close'>&times;</a> Updated Successfully <div>");
+
+                },
+                error: function () { alert("fail");
+                }
+            });
+        },
+        eventDrop : function(event) {
+            var start = $.fullCalendar.formatDate(event.start,"Y-MM-DD HH:mm:ss");
+            var end = $.fullCalendar.formatDate(event.end,"Y-MM-DD HH:mm:ss");
+            var title = event.title;
+            var id = event.id;
+            $.ajax({
+                url: '<?php echo base_url()?>index.php/admin/update_event',
+                type:"POST",
+                data:{title:title,start_date:start,end_date:end,id:id},
+                success: function () {
+                    $('#subsmsg').html("<div class='alert alert-danger '><a href='#' class='close' data-dismiss='alert' aria-label='close'>&times;</a> Updated Successfully <div>");
+
+                },
+                error: function () { alert("fail");
+                }
+            });
+        },
+        eventClick : function(event) {
+            if(confirm("Are you sure to want to remove it")){
+                var id = event.id;
+                $.ajax({
+                    url: '<?php echo base_url()?>index.php/admin/delete_event',
+                    type:"POST",
+                    data:{id:id},
+                    success: function () {
+                        loadview('event')
+                        $('#subsmsg').html("<div class='alert alert-danger '><a href='#' class='close' data-dismiss='alert' aria-label='close'>&times;</a> Removed Successfully <div>");
+                    },
+                    error: function () { alert("fail");
+                    }
+                });
+            }
+
+        },
+
+    })
+</script>
+
+

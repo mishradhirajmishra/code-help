@@ -1,0 +1,7 @@
+https://firebase.google.com/docs/auth/web/email-link-auth
+
+https://github.com/AnthonyNahas/ngx-auth-firebaseui#installation
+https://github.com/AnthonyNahas/ngx-auth-firebaseui/blob/master/docs/ngx-auth-firebaseui-login.md#usage
+https://ngx-auth-firebaseui.firebaseapp.com/doc/index.html
+
+https://ngx-auth-firebaseui.firebaseapp.com/home

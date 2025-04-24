@@ -1,0 +1,129 @@
+Components—directives with a template.
+Structural directives— *ngif ,*ngfor ,*ngSwitch
+Attribute directives—ngStyle,ngClass,
+=========================================================
+<div [ngSwitch]="hero?.emotion">
+  <app-happy-hero    *ngSwitchCase="'happy'"    [hero]="hero"></app-happy-hero>
+  <app-sad-hero      *ngSwitchCase="'sad'"      [hero]="hero"></app-sad-hero>
+  <app-confused-hero *ngSwitchCase="'confused'" [hero]="hero"></app-confused-hero>
+  <app-unknown-hero  *ngSwitchDefault           [hero]="hero"></app-unknown-hero>
+</div>
+==================================================================
+<ul>
+  <li *ngFor="let hero of heroes;let let i=index; odd: odd, even: even ;let first = first; let last = last">{{hero.name}}</li>
+</ul>
+
+
+
+
+
+
+
+
+
+
+
+// custom directive   
+ng g directive highlight
+===================================================================================
+-------------------------------------
+// hilight-directive.ts
+
+import { Directive ,ElementRef} from '@angular/core';
+
+@Directive({
+  selector: '[appHighlight]'
+})
+export class HighlightDirective {
+
+  constructor(private el:ElementRef) { 
+    el.nativeElement.style.backgroundColor = 'yellow';
+  }
+
+}
+----------------------------------------------------------
+app-component-html
+<p appHighlight>Highlight me!</p>
+==============================================================================
+// hilight-directive.ts ----------second verson
+import { Directive, ElementRef, HostListener } from '@angular/core';
+
+@Directive({
+  selector: '[appHighlight]'
+})
+export class HighlightDirective {
+  constructor(private el: ElementRef) { }
+
+  @HostListener('mouseenter') onMouseEnter() {
+    this.highlight('yellow');
+  }
+
+  @HostListener('mouseleave') onMouseLeave() {
+    this.highlight(null);
+  }
+
+  private highlight(color: string) {
+    this.el.nativeElement.style.backgroundColor = color;
+  }
+}
+==============================================================================
+// hilight-directive.ts ----------third verson
+
+import { Directive, ElementRef, HostListener, Input } from '@angular/core';
+
+@Directive({
+  selector: '[appHighlight]'
+})
+export class HighlightDirective {
+
+  constructor(private el: ElementRef) { }
+
+  @Input('appHighlight') highlightColor: string;
+
+  @HostListener('mouseenter') onMouseEnter() {
+    this.highlight(this.highlightColor || 'red');
+  }
+
+  @HostListener('mouseleave') onMouseLeave() {
+    this.highlight(null);
+  }
+
+  private highlight(color: string) {
+    this.el.nativeElement.style.backgroundColor = color;
+  }
+}
+----------------------------------------------------------
+app-component-html
+<p appHighlight="green">Highlight me!</p>
+
+
+
+
+===============================================================
+// template form validation
+-------------------------------------------------
+import { Directive, Input } from '@angular/core';
+import { NG_VALIDATORS, Validator, AbstractControl } from '@angular/forms';
+
+@Directive({
+  selector: '[appUrlValidate]',
+  providers: [{ provide: NG_VALIDATORS, useExisting: UrlValidateDirective, multi: true }]
+})
+export class UrlValidateDirective implements Validator{  
+  @Input() url: string;
+  validate(control: AbstractControl): {[key: string]: any} | null {
+    console.log(control.value)
+    if(control.value){
+    return !control.value.startsWith('https') || !control.value.includes('.io') ?{urlErr:true}:null;                      
+  }
+}
+}
+---------------------------------------------------
+            <div class="form-group">
+                <label for="url">Url</label>
+                <input id="url" appUrlValidate 
+                    [class.is-invalid]="url.touched && url?.errors"[class.is-valid]="url.touched && !url?.errors" class="form-control" type="url" name="url" #url="ngModel" ngModel required>
+                <small class="form-text text-right text-danger" *ngIf="url.touched && url.errors?.required">This field  is required</small>
+                <small class="form-text text-right text-danger" *ngIf="url.touched && url?.errors?.urlErr && !url.errors?.required">Invalid url must be in https//   ---.io formet</small>
+            </div>
+=============================================================

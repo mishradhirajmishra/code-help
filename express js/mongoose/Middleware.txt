@@ -1,0 +1,50 @@
+schema.pre('save', async function() {
+  await doStuff();
+  await doMoreStuff();
+});
+
+
+schema.post('save', async function() {
+  await doStuff();
+  await doMoreStuff();
+});
+
+------------------------------------------------------------
+schema.pre('validate', function() {
+  console.log('this gets printed first');
+});
+schema.post('validate', function() {
+  console.log('this gets printed second');
+});
+schema.pre('save', function() {
+  console.log('this gets printed third');
+});
+schema.post('save', function() {
+  console.log('this gets printed fourth');
+});
+
+-------------------------------------------------------------------
+Mongoose has both query and document hooks for remove().
+
+// Only document middleware
+schema.pre('remove', { document: true, query: false }, function() {
+  console.log('Removing doc!');
+});
+
+// Only query middleware. This will get called when you do `Model.remove()`
+// but not `doc.remove()`.
+schema.pre('remove', { query: true, document: false }, function() {
+  console.log('Removing!');
+});
+
+------------------------------------------------------------------------------
+
+schema.pre('updateOne', function() {
+  this.set({ updatedAt: new Date() });
+});
+
+schema.pre('findOneAndUpdate', async function() {
+  const docToUpdate = await this.model.findOne(this.getQuery());
+  console.log(docToUpdate); // The document that `findOneAndUpdate()` will modify
+});
+

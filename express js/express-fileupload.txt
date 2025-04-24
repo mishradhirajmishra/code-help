@@ -1,0 +1,20 @@
+npm i express-fileupload
+
+const fileUpload = require('express-fileupload'); 
+
+app.use(fileUpload()); 
+
+
+router.post('/addMedia', (req, res, next) => {
+  if (req.files && Object.keys(req.files).length != 0) {
+    var image = req.files.image.name;
+    image = new Date().getTime()+'_'+image
+    var dir = "./media/images/"+image;
+    sampleFile = req.files.image;
+    sampleFile.mv(dir, function(err) {
+        if (err) return res.status(500).send(err);
+    });
+    
+    // save image  variable in database
+ 
+});

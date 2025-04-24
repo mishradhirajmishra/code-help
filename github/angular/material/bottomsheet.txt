@@ -1,0 +1,68 @@
+// forms component where bottom sheet open  
+// bottomsheet compnent 
+
+=====================  forms component =========================
+import { Component, OnInit } from '@angular/core';
+import {MatBottomSheet} from '@angular/material/bottom-sheet';
+import { BottomSheetComponent } from '../bottom-sheet/bottom-sheet.component';
+@Component({
+  selector: 'app-forms',
+  templateUrl: './forms.component.html',
+  styleUrls: ['./forms.component.scss'],
+
+})
+export class FormsComponent implements OnInit {
+  title:string = 'Matrial'
+   response:string='sadwafrd';
+  constructor(private _bottomSheet: MatBottomSheet  ) {}   
+ 
+  openBottomSheet(): void {
+    this._bottomSheet.open(BottomSheetComponent,{data: this.response}) // send data from  bottomsheetcompnent
+    .afterDismissed().subscribe(data=>console.log(data))    // recive data from  bottomsheetcompnent
+  }
+  ngOnInit(){}
+}
+......................................................
+ <button mat-raised-button (click)="openBottomSheet()">Open file</button>
+..............................................................................
+=============================================================================================================
+===============================  bottomsheet compnent =======================
+import { Component, OnInit, Inject } from '@angular/core';
+import { MatBottomSheetRef} from '@angular/material/bottom-sheet';
+import {MAT_BOTTOM_SHEET_DATA} from '@angular/material/bottom-sheet';
+@Component({
+  selector: 'app-bottom-sheet',
+  templateUrl: './bottom-sheet.component.html',
+  styleUrls: ['./bottom-sheet.component.scss']
+})
+export class BottomSheetComponent implements OnInit {
+
+  constructor(
+    private _bottomSheetRef: MatBottomSheetRef<BottomSheetComponent>,
+    @Inject(MAT_BOTTOM_SHEET_DATA) public data: any //recive data from forms component
+    ) {}
+
+  openLink(event: MouseEvent): void {
+    this._bottomSheetRef.dismiss();
+    event.preventDefault();
+  }
+  ngOnInit(){
+    console.log(this.data)
+  }
+  action(str:String){
+    this._bottomSheetRef.dismiss(str);   // pass data to forms component
+  }
+}
+.....................................................................
+<p class="mat-display-1"> Are you sure ?</p>
+<mat-divider></mat-divider>
+<button mat-fab color="accent" (click)="action('yes')">Accent</button>
+<button mat-fab color="warn" (click)="action('no')">Warn</button>
+<mat-divider></mat-divider>
+............................................................................
+==============================================================================================
+=============================backend.module.ts
+@NgModule({
+........
+entryComponents: [ BottomSheetComponent]
+})

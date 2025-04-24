@@ -1,0 +1,13 @@
+https://console.developers.google.com/apis/dashboard?
+
+>> enable api & service
+
+>> enable 
+
+
+
+https://stackoverflow.com/questions/35700182/apinotactivatedmaperror-for-simple-html-page-using-google-places-api
+ apiKey: 'AIzaSyC1XvwlTlmMM1h2yTaYdoMBK0I8DuhpPfs'
+
+https://angular-maps.com/guides/getting-started/
+

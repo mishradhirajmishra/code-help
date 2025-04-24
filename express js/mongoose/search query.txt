@@ -1,0 +1,114 @@
+ module.exports.getAllShopSearch = (req, res, next) => {
+ 
+  var ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress; 
+  let search = {};
+  if (req.body.type == "global") {
+    if (req.body.category) {
+      search = {
+        'published': true, 'status': "true", category: { $elemMatch: { id: req.body.category, selected: true } },
+        $or: [
+          { shopName: { $regex: '.*' + req.body.text + '.*', $options: "i" } },
+          { offerHeading: { $regex: '.*' + req.body.text + '.*', $options: "i" } },
+          { offerText: { $regex: '.*' + req.body.text + '.*', $options: "i" } },
+          { categorySearch: { $regex: '.*' + req.body.text + '.*', $options: "i" } },
+          { location: { $regex: '.*' + req.body.text + '.*', $options: "i" } },
+          { city: { $regex: '.*' + req.body.text + '.*', $options: "i" } },
+          { country: { $regex: '.*' + req.body.text + '.*', $options: "i" } },
+          { area: { $regex: '.*' + req.body.text + '.*', $options: "i" } }
+        ]
+      }
+    } else {
+      search = {
+        'published': true, 'status': "true",
+        $or: [
+          { shopName: { $regex: '.*' + req.body.text + '.*', $options: "i" } },
+          { offerHeading: { $regex: '.*' + req.body.text + '.*', $options: "i" } },
+          { offerText: { $regex: '.*' + req.body.text + '.*', $options: "i" } },
+          { categorySearch: { $regex: '.*' + req.body.text + '.*', $options: "i" } },
+          { location: { $regex: '.*' + req.body.text + '.*', $options: "i" } },
+          { city: { $regex: '.*' + req.body.text + '.*', $options: "i" } },
+          { country: { $regex: '.*' + req.body.text + '.*', $options: "i" } },
+          { area: { $regex: '.*' + req.body.text + '.*', $options: "i" } }
+        ]
+      }
+    }
+  } else if (req.body.type == "byshopId") {
+    if (req.body.shopId) {
+      search = { 'published': true, 'status': "true", shop_id: req.body.shopId }
+    } else {
+      search = { 'published': true, 'status': "true", dummy: 'sss' }
+    }
+
+  } else if (req.body.type == "byshopName") {
+
+    search = { 'published': true, 'status': "true", shopName: { $regex: '.*' + req.body.shopName + '.*', $options: "i" } }
+
+
+  } else if (req.body.type == "byCountry") {
+
+    search = { 'published': true, 'status': "true", country: req.body.country }
+
+  }
+  else if (req.body.type == "byOtherLocation") {
+    if (req.body.category == "") {
+      search = {
+        'published': true, 'status': "true", $and: [{
+          $or: [
+            { location: { $regex: '.*' + req.body.location + '.*', $options: "i" } },
+            { city: { $regex: '.*' + req.body.location + '.*', $options: "i" } },
+            { country: { $regex: '.*' + req.body.location + '.*', $options: "i" } },
+            { area: { $regex: '.*' + req.body.location + '.*', $options: "i" } }
+          ],
+        }, {
+          $or: [
+            { shopName: { $regex: '.*' + req.body.text + '.*', $options: "i" } },
+            { offerHeading: { $regex: '.*' + req.body.text + '.*', $options: "i" } },
+            { offerText: { $regex: '.*' + req.body.text + '.*', $options: "i" } },
+            { categorySearch: { $regex: '.*' + req.body.text + '.*', $options: "i" } }
+          ]
+        }]
+
+      }
+    } else {
+      search = {
+        'published': true, 'status': "true", category: { $elemMatch: { id: req.body.category, selected: true } }, $and: [{
+          $or: [
+            { location: { $regex: '.*' + req.body.location + '.*', $options: "i" } },
+            { city: { $regex: '.*' + req.body.location + '.*', $options: "i" } },
+            { country: { $regex: '.*' + req.body.location + '.*', $options: "i" } },
+            { area: { $regex: '.*' + req.body.location + '.*', $options: "i" } }
+          ],
+        }, {
+          $or: [
+            { shopName: { $regex: '.*' + req.body.text + '.*', $options: "i" } },
+            { offerHeading: { $regex: '.*' + req.body.text + '.*', $options: "i" } },
+            { offerText: { $regex: '.*' + req.body.text + '.*', $options: "i" } },
+            { categorySearch: { $regex: '.*' + req.body.text + '.*', $options: "i" } }
+          ]
+        }]
+
+      }
+    }
+
+  }
+  if (req.body.geolocation) {
+    if(req.body.geolocation.coordinates.length){
+      search.geolocation = { $near: { $geometry: req.body.geolocation, $maxDistance: req.body.radius * req.body.rToM } }    
+      Shop.find(search).populate('user_id').then((r) => {  res.send(r) }).catch((e) => {  res.send(e) })
+    }else{ 
+      https.get('https://api.ipstack.com/' + ip + '?access_key=00c6bf8e1eae9c0bb48a4ba33247d9af&format=1', (resp) => {
+        let data = '';
+        resp.on('data', (chunk) => { data += chunk; });
+        resp.on('end', () => {  
+          search.geolocation = { $near: { $geometry: {type: 'Point', coordinates: [ JSON.parse(data).longitude, JSON.parse(data).latitude ]}, $maxDistance: req.body.radius * req.body.rToM } }    
+          Shop.find(search).populate('user_id').then((r) => {  res.send(r) }).catch((e) => {  res.send(e) })
+        });
+      }).on("error", (err) => { });
+
+    } 
+
+  }else{
+    Shop.find(search).populate('user_id').then((r) => {  res.send(r) }).catch((e) => {  res.send(e) })
+  }
+
+}

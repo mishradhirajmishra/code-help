@@ -1,0 +1,31 @@
+"use strict";
+const nodemailer = require("nodemailer");
+
+async function main() {
+  let transporter = nodemailer.createTransport({
+    service: 'Gmail',
+    host: "smtp.gmail.com ",
+    port: 587,
+    secure: false, // true for 465, false for other ports
+    auth: {
+      user: 'dhiraj.siswa.mishra@gmail.com', // generated ethereal user
+      pass: 'dhikrish12345', // generated ethereal password
+    },
+  });
+
+  let info = await transporter.sendMail({
+    from: '"Dhiraj" <dhiraj.siswa.mishra@gmail.com>', // sender address
+    to: "dhiraj.siswa.mishra@gmail.com", // list of receivers
+    subject: "Hello ✔", // Subject line
+    text: "Hello world?", // plain text body
+    html: "<b>What is Lorem Ipsum Lorem Ipsum is simply dummy text of the printing and typesetting industry Lorem Ipsum has been the industry's standard dummy text ever since the 1500s when an unknown printer took a galley of type and scrambled it to</b>", // html body
+  });
+  console.log("Message sent: %s", info.messageId);
+}
+
+main().catch(console.error);
+
+
+// https://myaccount.google.com/lesssecureapps
+
+https://accounts.google.com/DisplayUnlockCaptcha

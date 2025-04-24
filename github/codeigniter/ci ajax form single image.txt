@@ -1,0 +1,200 @@
+=============================================================
+                  controller.php
+=============================================================
+<?php
+defined('BASEPATH') OR exit('No direct script access allowed');
+
+class Admin extends CI_Controller {
+    public  function __construct()
+    {
+        parent::__construct();
+        $this->load->helper('url');
+        $this->load->helper('form');
+        $this->load->model('admin_model');
+    }
+ 
+    public function form()
+    {
+       $this->load->view('form');
+
+    }
+
+    public function send_form()
+    {
+
+        $this->load->library('image_lib');
+        $config['upload_path'] = './uploads/';
+        $config['allowed_types'] = 'gif|jpg|png';
+        $this->load->library('upload', $config);
+        $this->upload->do_upload('image');
+        $upload_data = $this->upload->data();
+        $image_name = $upload_data['file_name'];
+        $new_image_name = $upload_data['raw_name']. '_thumb' .$upload_data['file_ext'];
+        $data=$this->input->post();
+        $data['image'] =  $new_image_name;
+        if ($new_image_name) {
+           $ret=$this->admin_model->add_user($data);
+            $this->load->library('image_lib');
+            $config['image_library'] = 'gd2';
+            $config['width'] = 300;
+            $config['height'] = 300;
+            $config['x_axis'] = ($upload_data['image_width']/2-150);
+            $config['y_axis'] = ($upload_data['image_height']/2-150);
+            $config['maintain_ratio'] = FALSE;
+            $config['source_image'] = './uploads/' . $image_name;
+            $config['create_thumb'] = TRUE;
+            $this->image_lib->initialize($config);
+            $this->image_lib->crop();
+            if($ret==1){echo 'added Succcessfully';}else{ echo 'somtheing went wrong';}
+
+        }
+
+        $source="uploads/$image_name"; /* Delete Original image after crop*/
+        unlink ($source);
+
+    }
+}
+=============================================================
+                  Model.php
+=============================================================
+<?php
+defined('BASEPATH') OR exit('No direct script access allowed');
+
+class Admin_model extends CI_Model {
+
+ public  function  __construct()
+ {
+     $this->load->database();
+ }
+
+
+ function  add_user($data){
+     $this->db->insert('user',$data);
+     if ($this->db->affected_rows()) { return 1;} else { return 0; }
+ }
+}
+=============================================================
+                  View.php
+=============================================================
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Image Upload</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <style>
+        .checkbox {
+            text-align: center;
+        }
+      .btn.btn-primary {
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div id="subsmsg">
+
+    </div>
+    <div class="row">
+        <div class="col-md-6 offset-md-3">
+
+    <?php $data = array('id'=>"fupForm")?>
+    <?php echo form_open_multipart('admin/send_form',$data) ?>
+        <div class="form-group">
+            <label for="name">User Name:</label>
+            <input type="text" class="form-control" id="name" placeholder="Enter email" name="username">
+        </div>
+        <div class="form-group">
+            <label for="email">Email:</label>
+            <input type="email" class="form-control" id="email" placeholder="Enter email" name="email">
+        </div>
+        <div class="form-group">
+            <label for="pwd">Password:</label>
+            <input type="password" class="form-control" id="pwd" placeholder="Enter password" name="password">
+        </div>
+        <div class="checkbox">
+            <img id="user_image" src="<?php echo base_url() ?>uploads/download.jpg"  alt="your image"/>
+            <input type="file"  name="image" size="20" id="inputFile"/><br>
+            <input type="submit" value="send" class="btn btn-primary">
+
+        </div>
+
+    <?php echo form_close() ?>
+</div>
+
+    </div>
+</div>
+<script>
+    function readURL(input) {
+        if (input.files && input.files[0]) {
+            var reader = new FileReader();
+
+            reader.onload = function (e) {
+                $('#user_image').attr('src', e.target.result);
+            }
+
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+
+    $("#inputFile").change(function () {
+        readURL(this);
+    });
+</script>
+<script>
+    $(document).ready(function(e){
+
+        $("#fupForm").on('submit', function(e){
+            e.preventDefault();
+            $.ajax({
+                type: 'POST',
+                url: '<?php echo base_url()?>index.php/admin/send_form',
+                data: new FormData(this),
+                contentType: false,
+                cache: false,
+                processData:false,
+                success: function(msg){
+         $('#subsmsg').html("<div class='alert alert-danger '> <a href='#' class='close' data-dismiss='alert' aria-label='close'>&times;</a><span style='color: red'> "+ msg+ "</span><div>");
+                },
+              error: function(){
+               $('#subsmsg').html("<div class='alert alert-danger '><a href='#' class='close' data-dismiss='alert' aria-label='close'>&times;</a>\"+ msg+ \"<span style='color: red'> Try again</span><div>");
+
+              },
+
+            });
+        });
+    });
+</script>
+</body>
+</html>
+=============================================================
+                        sql.php
+=============================================================
+CREATE TABLE `user` (
+  `1d` int(100) NOT NULL,
+  `username` varchar(100) NOT NULL,
+  `password` varchar(100) NOT NULL,
+  `email` int(100) NOT NULL,
+  `image` varchar(100) NOT NULL,
+  `date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
+) 
+
+
+
+
+
+
+
+
+
+
+
+
+

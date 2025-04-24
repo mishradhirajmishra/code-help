@@ -1,0 +1,26 @@
+const readline = require('readline');
+const rl = readline.createInterface({
+  input: process.stdin,
+  output: process.stdout
+})
+rl.question('whats is your name \n',(ans)=>{
+  if(ans == 'dk'){
+    console.log(ans);
+    rl.close();
+  }else{
+
+
+  rl.on('line',(ans)=>{
+    if(ans == 'dk'){
+      console.log(ans);
+      rl.close();
+    }else{
+      rl.setPrompt('tryagain \n');
+      rl.prompt()
+    }
+  })
+}
+})
+rl.on('close',()=>{
+  console.log('correct answer');
+})

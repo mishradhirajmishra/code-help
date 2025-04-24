@@ -1,0 +1,56 @@
+export const environment = {
+  production: false,
+  firebaseConfig : {
+    apiKey: "AIzaSyCdEK07tXzbAXBtU-A5rttM6FUsxpiEX5Q",
+    authDomain: "angular-firebase-ace46.firebaseapp.com",
+    databaseURL: "https://angular-firebase-ace46.firebaseio.com",
+    projectId: "angular-firebase-ace46",
+    storageBucket: "angular-firebase-ace46.appspot.com",
+    messagingSenderId: "823084282101",
+    appId: "1:823084282101:web:454ce0474895e7f65215bc",
+    measurementId: "G-G87W3TBGWE"
+  }
+};
+================================================================
+//app-module.ts
+import { AngularFireModule } from "@angular/fire";
+import { AngularFireDatabaseModule } from "@angular/fire/database";
+  imports: [
+    AngularFireModule.initializeApp(environment.firebaseConfig) ,
+    AngularFireDatabaseModule
+]
+===========================================
+import { Component, OnInit } from '@angular/core';
+import { AngularFireDatabase } from "@angular/fire/database";
+import { Observable } from 'rxjs';
+import { NgForm } from '@angular/forms';
+@Component({
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.scss']
+})
+export class AppComponent implements OnInit{
+  title = 'firebase';
+  name:string='';
+  items:Observable<any[]>;
+  constructor(public db:AngularFireDatabase){
+   this.items = this.db.list('items').valueChanges();
+   console.log(this.items)
+  }
+  ngOnInit(){
+
+  }
+  submit(frm:NgForm){
+   this.db.list('items').push(frm.value)
+    this.name=''
+  }
+}
+=====================================================
+<form #frm="ngForm" (ngSubmit)="submit(frm)">
+  <input type="text" #name1 [(ngModel)]="name" name="name"> 
+  <button type="submit">add</button>
+</form>
+
+<p *ngFor="let it of items |async">{{it.name}}</p>
+
+<router-outlet></router-outlet>

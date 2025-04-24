@@ -1,0 +1,66 @@
+                                     ==========================================================
+                                        connect meny data base dinamicaly for session change
+                                      ==========================================================
+=> dont use dtabase in autoload file
+                                      =====================> database.php <=====================
+
+$session2019_2020='ezedu_RRSGS-AMTI-01_2019_2020';
+$session2020_2021='ezedu_RRSGS-AMTI-01_2020_2021';
+$session2021_2022='ezedu_RRSGS-AMTI-01_2021_2022';
+$active_group = $session2019_2020;
+$query_builder = TRUE;
+
+$db[$session2019_2020] = array('database' => $session2019_2020);
+$db[$session2020_2021] = array(	'database' => $session2020_2021);
+$db[$session2021_2022] = array('database' => $session2021_2022);
+                                       =====================> model.php <=====================  
+    function __construct()
+    {   parent::__construct(); $database=$_SESSION['dynamic_db']; $this->load->database($database);}
+
+                                       =====================>controller.php <=====================
+
+class Admin extends CI_Controller
+{
+    function __construct()
+    {
+        parent::__construct();
+        $this->load->helper('url');
+        $this->load->helper('form');
+        $this->load->model('admin_model');
+        $this->load->model('teacher_model');
+
+    }
+
+    function change_session(){
+        $ses=$this->input->post('session');
+        $this->session->set_userdata('dynamic_db',$ses);
+        if($ses=="ezedu_RRSGS-AMTI-01_2019_2020"){$this->session->set_userdata('running_year','2019-2020');}
+        elseif ($ses=="ezedu_RRSGS-AMTI-01_2020_2021"){$this->session->set_userdata('running_year','2020-2021');}
+        elseif ($ses=="ezedu_RRSGS-AMTI-01_2021_2022"){$this->session->set_userdata('running_year','2021-2022');}
+     }
+}
+                                        =====================> view.php <=====================
+
+        <select class="form-control" onchange="change_session(this.value)">
+        <option value="ezedu_RRSGS-AMTI-01_2019_2020" <?php if($_SESSION['dynamic_db']=="ezedu_RRSGS-AMTI-01_2019_2020"){ echo'selected';} ?> >2019-2020</option>
+        <option value="ezedu_RRSGS-AMTI-01_2020_2021" <?php if($_SESSION['dynamic_db']=="ezedu_RRSGS-AMTI-01_2020_2021"){ echo'selected';} ?> >2020-2021</option>
+        <option value="ezedu_RRSGS-AMTI-01_2021_2022" <?php if($_SESSION['dynamic_db']=="ezedu_RRSGS-AMTI-01_2021_2022"){ echo'selected';} ?> >2021-2022</option>
+        </select>
+<script>
+	function change_session(v){
+        $.ajax({
+            url: '<?php echo base_url()?>index.php/admin/change_session',
+            type:"POST",
+            datatype:"json",
+            data:{session:v},
+            success: function (msg) {
+                location.reload();
+                // alert(msg);
+            },
+            error: function () {
+                alert('error')
+
+            }
+        })
+    }</script>
+########################################################################################################################################

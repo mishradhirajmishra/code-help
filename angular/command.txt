@@ -1,0 +1,19 @@
+// add ng bootstrap to angular
+  ng add @ng-bootstrap/schematics
+  ng new angular-project --enable-ivy
+  ng generate module customers --route customer-list --module app.module  
+  
+
+ng generate module admin/media --route media --module admin.module
+
+npm install http-server -g
+http-server dist/.
+  
+ ng build --prod --outputHashing=all
+
+ ng generate module back-end/dashboard --route dashboard --module back-end.module 
+
+ng generate module back-end/seller-notification --route seller-notification --module back-end.module
+ng generate module back-end/user-notification --route user-notification --module back-end.module
+
+ng generate module front-end/user-dashboard --route user-dashboard --module front-end.module 

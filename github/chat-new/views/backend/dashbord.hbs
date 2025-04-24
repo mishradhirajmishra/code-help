@@ -1,0 +1,42 @@
+<div class="container">
+     <table class="table table-striped">
+    <thead>
+      <tr>
+        <th>Id</th>
+        <th>Image</th>
+        <th>Name</th>
+        <th>Email</th>
+        <th>Action</th>        
+      </tr>
+    </thead>
+    <tbody>
+         {{#each alluser}}
+      <tr>
+        <td> {{@index}}</td>
+        <td><img class="profile-img" src="/images/{{this.image}}"></td>
+        <td> {{this.name}}</td>
+        <td> {{this.email}}</td>
+        <td><button onclick="addContact('{{this._id}}')" class="btn btn-xs btn-success">Add</button></td>
+
+      </tr>   
+        {{/each}}
+    </tbody>
+  </table>
+
+</div>
+
+<script>
+   function addContact(id){
+               $.ajax({
+                url: '/addcontact',
+                type: "POST",
+                datatype: "json",
+                data: {id:id},
+                success: function (msg) {
+                  alert(msg)
+                 {{!-- location.replace("/chat")                 --}}
+                }
+            });
+      
+   }
+</script>

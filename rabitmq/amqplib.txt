@@ -1,0 +1,54 @@
+
+npm i amqplib
+docker run -d --name amqp-cont -p 5672:5672 rabbitmq
+docker run -d --hostname my-rabbit --name some-rabbit -p 5672:5672 -p 15672:15672 rabbitmq:3-management
+http://localhost:15672/
+guest /guest
+ 
+rabbitmq-plugins list
+sbin/rabbitmq-plugins enable rabbitmq_management   // works on window also
+
+rabbitmqctl list_queues
+rabbitmqctl list_channels
+             list_connections
+              list_consumers 
+             list_exchanges
+rabbitmqctl list_vhosts | xargs -n1  rabbitmqctl list_queues -p
+//amqplib/amqplib
+-----------------------------------------
+var amqplib= require('amqplib').connect('amqp://localhost')
+module.exports.publisher=(que,msg)=>{
+    return amqplib.then(con=>con.createChannel() )
+     .then((ch)=>  {
+       return ch.assertQueue(que)
+       .then(ok=>{
+         console.log(ok)
+         ch.sendToQueue(que,Buffer.from(JSON.stringify(msg)))
+       })
+     }).catch(console.warn);
+   }
+   module.exports.consumer=(que)=>{
+    return amqplib.then(con=>con.createChannel() )
+     .then((ch)=>  {
+        return ch.consume(que,(msg)=> {
+            if (msg !== null) {
+              console.log(msg.content.toString());
+                ch.ack(msg);
+            }
+        });
+     }).catch(console.warn);
+   }
+
+
+-------------------------------------------
+const {publisher,consumer}= require('./amqplib/amqplib') 
+// Publisher
+publisher('task1',{name:"dhiraj mashra"})
+consumer('task2')
+
+consumer('task1')
+// publisher()
+publisher('task2',{name:"ramesh mashra"})
+
+-------------------------------
+

@@ -1,0 +1,25 @@
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+  <a class="navbar-brand" href="#">Chat app</a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <div class="collapse navbar-collapse" id="navbarText">
+    <ul class="navbar-nav mr-auto">
+        {{#if authrised}} 
+        <li class="nav-item"><a class="nav-link" href="/dashboard">Dashbord</a></li>
+        <li class="nav-item"><a class="nav-link" href="/chat">Chat</a></li>
+         {{/if}}
+    </ul>
+    <span class="navbar-text">
+        <ul class="nav navbar-nav navbar-right" style="visibility: visible;">
+        {{#if authrised}} 
+        <li class="nav-item"><a class="nav-link"> Welcome {{user.name}}</a></li>
+        <li class="nav-item"><a class="nav-link" href="/auth/logout"><span class="glyphicon glyphicon-log-out"></span> Log-Out</a></li>
+        {{else}}
+        <li class="nav-item"><a class="nav-link" href="/auth/register"><span class="glyphicon glyphicon-user"></span> Sign Up</a></li>
+        <li class="nav-item"><a class="nav-link" href="/auth/login"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
+         {{/if}}
+      </ul>
+    </span>
+  </div>
+</nav>

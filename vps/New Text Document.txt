@@ -1,0 +1,4 @@
+        location /getCountryFromIpStack/ {
+                rewrite /api/(.*) /$1  break;
+                proxy_pass https://api.ipstack.com/check?access_key=00c6bf8e1eae9c0bb48a4ba33247d9af&format=1;
+        }

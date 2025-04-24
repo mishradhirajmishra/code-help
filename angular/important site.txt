@@ -1,0 +1,7 @@
+https://www.9lessons.info
+
+ https://blog.angular-university.io
+
+https://github.com/fireship-io/193-paypal-checkout-v2-demos/blob/master/angularApp/src/app/payme/payme.component.html
+
+https://medium.com/@swapnilnakhate/payumoney-payment-gateway-integration-with-nodejs-f715e5fc25a

@@ -1,0 +1,66 @@
+
+================================================================================================================================================
+const routes: Routes = [
+  { path: 'customer-list', loadChildren: () => import('./customers/customers.module').then(m => m.CustomersModule),data: { preload: true } },
+  { path: 'order-list', loadChildren: () => import('./orders/orders.module').then(m => m.OrdersModule) },
+  {path:'',redirectTo:'',pathMatch:'full'},
+  {path:'**',component:PageNotFoundComponent}
+  ];
+===========================================================
+//component routing way
+this.router.navigate(['/student'])
+
+
+ ====================================================================================================
+ //lazyloading module create
+ ng generate module customers --route customer-list --module app.module          ************************** command lazyload
+ 
+ { path: 'order-list', loadChildren: () => import('./orders/orders.module').then(m => m.OrdersModule) },
+ ----------------------------------------------------------------------------------------------------
+ //preloading ------ in app-routing module
+ import { Routes, RouterModule ,PreloadAllModules} from '@angular/router';
+   imports: [RouterModule.forRoot(routes, {
+    preloadingStrategy: PreloadAllModules
+  })],
+------------------------------------------------------------------------- 
+
+//----------custom-preload-service---------------
+
+import { Injectable } from '@angular/core';
+import { PreloadingStrategy, Route } from '@angular/router';
+import { Observable } from 'rxjs';
+
+@Injectable({
+  providedIn: 'root'
+})
+export class CustomPeloadService implements PreloadingStrategy {
+  preload(route: Route, load: () => Observable<any>): Observable<any> {
+    if (route.data && route.data['preload']) {
+      return load();
+    } else {
+      return Observable.throw(null);
+    }
+  }
+}
+---------------------------------------------------------------------------------------------------------------------------------
+//----------app routing module--------------- 
+import { Routes, RouterModule} from '@angular/router';
+import { CustomPeloadService } from './custom-peload.service';
+
+
+const routes: Routes = [
+  { path: 'customer-list', loadChildren: () => import('./customers/customers.module').then(m => m.CustomersModule),data: { preload: true } },
+  { path: 'order-list', loadChildren: () => import('./orders/orders.module').then(m => m.OrdersModule) }
+  ];
+
+@NgModule({
+  imports: [RouterModule.forRoot(routes,{preloadingStrategy:CustomPeloadService})],
+  exports: [RouterModule]
+})
+export class AppRoutingModule { }
+-----------------------------------------------------------------------------------------------------------------------------------------
+//----------app  module--------------- 
+import { CustomPeloadService } from './custom-peload.service';
+
+  providers: [CustomPeloadService],
+

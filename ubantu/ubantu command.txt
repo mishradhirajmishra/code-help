@@ -1,0 +1,6 @@
+cd /
+cd ../
+pwd
+ls
+tab segsation
+double tab segsation all

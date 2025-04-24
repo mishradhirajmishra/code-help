@@ -1,0 +1,80 @@
+https://learning.postman.com/docs/writing-scripts/script-references/test-examples/
+
+pm.test("Status code is 200", function () {
+  pm.response.to.have.status(200);
+  pm.response.to.have.status("Created"); // same as above
+  //pm.expect(pm.response.code).to.eql(200);
+  
+  // if(pm.response.code === 200) // used in 
+  
+    let data= pm.response.json();
+    pm.expect(data.name).to.eql('dhiraj');
+    pm.expect(data.name).to.be.a('string')
+	pm.expect(data.name).to.have.lengthOf(1)
+	
+	pm.expect(pm.response.code).to.be.oneOf([201,202,402]);
+});
+-------------------------------------------------------------------------
+pm.response.to.have.header("Content-Type");
+
+pm.expect(pm.response.headers.get('Content-Type')).to.eql('application/json');
+pm.expect(pm.cookies.has('JSESSIONID')).to.be.true;
+pm.expect(pm.cookies.get('isLoggedIn')).to.eql('1');
+pm.test("Response time is less than 200ms", () => {
+  pm.expect(pm.response.responseTime).to.be.below(200);
+  pm.expect(pm.response.json().name).to.eql(pm.environment.get("name"));
+  
+  --------------------------------------------------------------------
+  const jsonData = pm.response.json();
+  pm.expect(jsonData).to.be.an("object");  // {}
+  pm.expect(jsonData.name).to.be.a("string");  // "abc"
+  pm.expect(jsonData.age).to.be.a("number");    // 123
+  pm.expect(jsonData.hobbies).to.be.an("array");  // []
+  pm.expect(jsonData.website).to.be.undefined;    // no website element in response object
+  pm.expect(jsonData.email).to.be.null;          // null
+  
+  pm.expect(jsonData.errors).to.be.empty; // errors:[]
+  pm.expect(jsonData.areas).to.include("goods"); //"areas": [ "goods", "services" ],
+  ----------------------------------------------
+ obj= {
+  "errors": [],
+  "areas": [ "goods", "services" ],
+  "settings": [
+    { "type": "notification", "detail": [ "email", "sms" ]},
+    { "type": "visual", "detail": [ "light", "large" ]}
+  ]
+}
+
+const Settings =jsonData.settings.find(m => m.type === "notification");  // get   { "type": "notification","detail": [ "email", "sms" ] }
+ pm.expect(Settings).to.be.an("object", "Could not find the setting");
+ pm.expect(Settings.detail).to.include("sms");
+ pm.expect(Settings.detail).to.have.members(["email", "sms"]);  // have both
+ 
+ ---------------------------------------------------------------
+ //Assert that an object contains keys or properties
+ pm.expect({a: 1, b: 2}).to.have.all.keys('a', 'b');
+pm.expect({a: 1, b: 2}).to.have.any.keys('a', 'b');
+pm.expect({a: 1, b: 2}).to.not.have.any.keys('c', 'd');
+pm.expect({a: 1}).to.have.property('a');
+pm.expect({a: 1, b: 2}).to.be.an('object').that.has.all.keys('a', 'b');
+-----------------------------------------------------------------------
+  data= "Subscriber" |"Customer" | "User"
+pm.expect(data).to.be.oneOf(["Subscriber", "Customer", "User"]);
+-------------------------------------------------------------------
+  data = { "id": "a0af460b6373", "created": true, "errors": []}
+  const expectedObject = { "created": true, "errors": []};
+  pm.expect(data).to.deep.include(expectedObject);
+
+---------------------------------------------------------------------
+Check the active (currently selected) environment in Postman:
+pm.expect(pm.environment.name).to.eql("Production");});
+--------------------------------------------------------------
+ console.log(pm.collectionVariables.get("url"));
+--------------------------------------------------------
+//There may be occasions where you expect a test to fail and it doesn't.
+pm.expect(true).to.eql(false);
+
+
+
+
+

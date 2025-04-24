@@ -1,0 +1,124 @@
+=======================================================================
+//Url Validator
+...................................
+import { AbstractControl } from '@angular/forms';
+export function ValidateUrl(control: AbstractControl) {
+   if(control.value && control.value !==null && control.value !==undefined){
+    if (!control.value.startsWith('https') || !control.value.includes('.io')) {
+        return { validUrl: true };
+      }
+   }
+  return null;
+}
+............................................
+ url: ['', [Validators.required,ValidateUrl]],
+............................................
+ errors.validUrl
+............................................
+==========================================================================
+//Url Minmax date validator
+import { AbstractControl } from '@angular/forms';
+export function ValidateMinMax(control: AbstractControl) {
+   if(control.value && control.value !==null && control.value !==undefined){
+    var  maxDate= new Date('2020-01-01').getTime();
+    var  minDate= new Date('2018-01-01').getTime();
+    var  ControlDate = new Date(control.value).getTime();  
+    console.log( maxDate);
+    console.log(minDate);
+    console.log(ControlDate);
+    if (maxDate < ControlDate || minDate > ControlDate) {
+          return { invalidDate: true };       
+     }
+   }
+  return null;
+}
+............................................
+ date: ['', [Validators.required,ValidateMinMax]],
+............................................
+ errors.invalidDate
+............................................
+=============================================================================
+//password validator of (password & cpassword )
+import { AbstractControl } from '@angular/forms';
+
+export function PassCompare(control: AbstractControl) {
+   if(control.value && control.value !==null && control.value !==undefined){
+     var cpass= control.value;
+     var pass = control.root.get('password').value;
+     console.log(pass);
+    if (cpass !== pass) {
+          return { invalidPss: true };       
+     }
+   }
+  return null;
+}
+...........................................................................................
+  constructor(private router: Router, private fb: FormBuilder, ) {
+    this.password.valueChanges.subscribe(
+      x => this.cpassword.updateValueAndValidity()
+    )
+   }
+
+  get password() {
+    return this.userProfile.get('password');
+  }
+  get cpassword() {
+    return this.userProfile.get('cpassword');
+  }
+
+ date: ['', [Validators.required,PassCompare]],
+...........................................................................................
+ errors.invalidPss
+............................................
+==============================================================
+form group validator
+import { AbstractControl, FormGroup } from '@angular/forms';
+export function TimeCompare(control: FormGroup) {
+    var  t1 = control.controls.minTime.value.split(":");
+    var t2 = control.controls.maxTime.value.split(":");
+    var maxTime = parseInt(t1[0])*60 + parseInt(t1[1]);
+    var minTime = parseInt(t2[0])*60 + parseInt(t2[1]);
+    if(!(minTime  > maxTime) )      
+        {  return { invalidTime: true };   }
+   return null;
+}
+--------------------------------------------------------------
+  get time() {
+    return this.userProfile.get('time');
+  }
+ userProfile = this.fb.group({
+    name:['',Validators.required],
+      ...........
+       .............
+    hobby: this.fb.group({
+      reading_book: [false],
+      watching_moove: [false],
+      swimming: [false]
+    },{validators:HobbyValidation}),
+    time: this.fb.group({
+      minTime: [''],
+      maxTime: ['']
+    },{validators:TimeCompare})
+  })
+----------------------------------------------------------------
+            <ng-container formGroupName="time">
+                <div class="form-group">
+                    <label class="form-check-label">Time </label>
+                    <div class="form-inline float-right mr">
+                        <label class="btn btn-primary">Min</label>
+                        <input id="minTime" class="form-check-input form-control" type="time" formControlName="minTime"
+                            name="minTime">
+                        <label class="btn btn-primary">max </label>
+                        <input id="maxTime" class="form-check-input form-control" type="time" formControlName="maxTime"
+                            name="maxTime" required>
+
+                        <span class="form-control" *ngIf="time.dirty"
+                            [class.is-invalid]="time.dirty && time.errors?.invalidTime"
+                            [class.is-valid]="time.dirty && !time.errors?.invalidTime"></span>
+
+                    </div>
+                    <small class="form-text text-right  text-danger mt-3"
+                        *ngIf="time.dirty && time.errors?.invalidTime">Invalid Time range</small>
+                </div>
+            </ng-container>
+========================================================================
