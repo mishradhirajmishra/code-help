@@ -1,0 +1,46 @@
+ 
+
+ 
+git clone --depth 1 https://github.com/ggerganov/llama.cpp.git
+cd llama.cpp
+rm -rf build
+cmake -B build \
+  -DLLAMA_METAL=ON \
+  -DLLAMA_BLAS=ON \
+  -DLLAMA_BLAS_VENDOR=Apple \
+  -DCMAKE_BUILD_TYPE=Release
+cmake --build build --config Release -j$(sysctl -n hw.ncpu)
+
+cd llama.cpp
+./build/bin/llama-server \
+  -hf unsloth/Qwen3-Coder-30B-A3B-Instruct-GGUF:TQ1_0 \
+  -ngl 999 \
+  --host 0.0.0.0 \
+  --port 11434
+   --ctx-size 4096 --temp 0.3
+
+
+./build/bin/llama-server \
+ -hf unsloth/Qwen3-Coder-30B-A3B-Instruct-GGUF:TQ1_0 \
+  --ctx-size 4096 \
+  --temp 0.5 \
+  --top-p 0.9 \
+  --top-k 40 \
+  --repeat-penalty 1.15 \
+  --mirostat 2 \
+  --host 0.0.0.0 \
+  --port 11434 \
+  -ngl 999
+
+
+cd llama.cpp
+./build/bin/llama-cli \
+  -hf unsloth/Qwen3-Coder-30B-A3B-Instruct-GGUF:TQ1_0 \
+  --ctx-size 4096 --temp 0.3
+ 
+rm -rf ~/Library/Caches/*
+sudo rm -rf /System/Library/Caches/*
+sudo rm -rf /Library/Caches/*
+sudo purge
+sudo rm -rf ~/.Trash/*
+sudo rm -rf /Users//.Trash/ 

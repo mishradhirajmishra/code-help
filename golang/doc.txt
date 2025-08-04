@@ -1,0 +1,389 @@
+
+/*  DATATYPE */
+
+Basic Data Types
+| Type      | Description                 | Example                  |
+| --------- | --------------------------- | ------------------------ |
+| `int`     | Integer                     | `var a int = 10`         |
+| `float` | Floating-point number         | float32 ,float64  
+| `bool`    | Boolean (true/false)        |                          |
+| `string`  | Sequence of characters      |                          |
+| `byte`    | Alias for `uint8`           | `var b byte = 'A'`       |
+| `rune`    | Alias for `int32` (Unicode) | `var ch rune = 'ग'`      |
+......................................................................
+Integer Types
+| Type    | Size   | Example               |
+| ------- | ------ | --------------------- |
+| `int8`  | 8-bit  | `var a int8 = 127`    |
+| `int16` | 16-bit | `var a int16 = 32000` |
+| `int32` | 32-bit | `var a int32 = 1e6`   |
+| `int64` | 64-bit | `var a int64 = 1e10`  |
+| `uint8` | 0–255  | `var a uint8 = 255`   |
+int and uint are platform-dependent (32 or 64 bit)
+......................................................................
+| Category  | Types                                    |
+| --------- | ---------------------------------------- |
+| Numeric   | `int`, `float64`, `uint8`, `int32`, etc. |
+| Boolean   | `bool`                                   |
+| Text      | `string`, `rune`, `byte`                 |
+| Composite | `array`, `slice`, `map`, `struct`        |
+| Reference | `pointer`                                |
+| Special   | `interface{}`, `chan`, `func`, `error`   |
+
+......................................................................
+/* VARIABLE */
+	var  abc string = "xyz"
+    var  abc string  
+    abc:= "xyz"
+
+var x, y, z int = 1, 2, 3
+
+name, age := "Alice", 30
+
+var (
+    user  string = "admin"
+    score int    = 90
+    done  bool   = false
+)
+......................................................................
+/* CONSTANT */
+const s string = "constant"
+| Type    | Example                        |
+| ------- | ------------------------------ |
+| String  | `const msg = "Hello"`          |
+| Boolean | `const ready = true`           |
+| Numeric | `const pi = 3.14`              |
+| Typed   | `const n int = 5`              |
+| Untyped | `const x = 10` (flexible type) |
+const (
+    A = 1
+    B = 2
+    C = "Hello"
+)
+const (
+    A = iota  // 0
+    B         // 1
+    C         // 2
+)
+/* FOR */
+for j := 0; j < 3; j++ {  fmt.Println(j) }
+for i := range 3 {  fmt.Println("range", i) }
+break , continue
+
+......................................................................
+/* IF ELSE */
+
+  if num := 9; num < 0 {
+        fmt.Println(num, "is negative")
+    } else if num < 10 {
+        fmt.Println(num, "has 1 digit")
+    } else {
+        fmt.Println(num, "has multiple digits")
+    }
+......................................................................
+/* SWITCH */
+
+   i := 2   
+    switch i {
+    case 1:
+        fmt.Println("one")
+    case 2:
+        fmt.Println("two")
+    default:
+        fmt.Println("diffrent")
+    }
+......................................................................
+/* ARRAY */
+var a [5]int  // array of 5 ints with zero values
+b := [3]string{"a", "b", "c"}
+c := [...]int{1, 2, 3, 4}  // size inferred
+c := [4]int{1,  2: 3, 3:4}  =>[1 0 3 4]  // value at specific index remaining fill with  0
+
+len(c) , copy(dst, src) , range 
+for i, v := range nums {   fmt.Println(i, v)}
+
+ // append is working with slice only
+......................................................................
+/* SLICE */
+s := []int{10, 20, 30}
+
+a := [5]int{1, 2, 3, 4, 5} 
+s := a[1:4]  // s = [2, 3, 4]  // slice from array  
+
+s := make([]int, 5)       // Length 5, all zero
+s := make([]int, 3, 10)   // Length 3, Capacity 10
+
+s1 := []int{1, 2}
+s1 = append(s, 3, 4)       // s = [1, 2, 3, 4]
+
+src := []int{1, 2, 3}
+dst := make([]int, len(src))
+copy(dst, src)
+len(dst) ,cap(dst)
+
+s := []int{10, 20, 30, 40, 50}
+sub := s[1:4]  // [20 30 40]
+
+// Remove index 2
+	s := []int{1, 2, 3, 4, 5, 6}
+	s = append(s[:2], s[3:]...) // s = [1, 2, 4]
+
+
+......................................................................
+/* MAP */
+var m map[string]int         =>map[]     // Declared but not initialized (nil map)
+m = make(map[string]int)     =>map[]     // Now usable
+
+// OR shorthand:
+m := map[string]int{ "apple":  5, "banana": 10,}   => map[apple:5 banana:10]
+m["orange"] = 7  
+val := m["banana"]    // returns 10
+val, ok := m["apple"]       => 5 true
+val, ok := m["mango"].      => 0 false
+
+delete(m, "banana").   //Safe even if key doesn’t exist.
+
+// always use by refrance( not by value)
+a := map[string]int{"x": 1}
+b := a
+b["x"] = 100
+fmt.Println(a["x"])  // 100 — also changed!
+......................................................................
+/* FUNCTIONS */
+func eval(a int, b int) int {          //(int,int)  for   multiple return
+    // return a+b 
+     return  a, b        // multiple return
+     }
+
+func sum(nums ...int) {    // Variadic Functions   (Multiple Arguments)
+    fmt.Print(nums, " ")
+  }
+
+func multiplier(factor int) func(int) int {      // return function
+    return func(x int) int {
+        return x * factor
+    }
+}
+
+func() {   fmt.Println("Anonymous call!")}()    // Anonymous Function
+
+func factorial(n int) int {          //Recursion (Function Calling Itself)
+    if n == 0 {
+        return 1
+    }
+    return n * factorial(n-1)
+}
+......................................................................
+/* Range over Built-in Types */
+  work on number, string, array, slice, map, Channel
+......................................................................
+/* POINTERS*/
+| Concept     | Symbol | Description                             |
+| ----------- | ------ | --------------------------------------- |
+| Address-of  | `&`    | Gets the memory address of a variable   |
+| Dereference | `*`    | Accesses the value stored at an address |
+x := 10
+p := &x  // p is a pointer to x
+
+fmt.Println(*p) // prints: 10
+*p = 20
+fmt.Println(x)  // prints: 20 (x is changed)
+
+func update(val *int) {}.  //   update(&x)
+
+If a pointer is not initialized, it is nil:  e.g. var p *int
+ 
+......................................................................
+/*STRINGS AND RUNE */
+=>A string is a read-only slice of bytes ([]byte), typically used to hold UTF-8 encoded text.
+=>A rune is an alias for int32 and represents a Unicode code point.
+
+s := "hello"
+s[0] = 'H' // ❌ Error: cannot assign to s[0] (Immutable)
+
+for loop over string print unicode of charcter while rage print charcter itself,
+ string(unicode) => charcter
+
+ToUpper, ToLower, Trim, Replace, Split, Join
+Contains, HasPrefix, Index, Count, EqualFold
+
+......................................................................
+/*STRUCT */
+
+dog := struct {            //anonymous
+        name   string
+        isGood bool
+    }{ "Rex", true, }
+
+type person struct {
+	name string
+	age  int
+}	
+func (r *rect) rename() int {   r.name = "dhiraj"}
+func (p *Person) Birthday() {   p.age++ }
+...........................................
+	type Address struct {
+		city  string
+		state string
+	}
+
+	type User struct {
+		name    string
+		address Address
+	}
+
+	u := User{
+		name:    "Rahul",
+		address: Address{city: "Delhi", state: "UP"},
+	}
+	fmt.Println(u.address.city) // Delhi
+p1 := Person{"Dhiraj", 30}
+p2 := Person{"Dhiraj", 30}
+fmt.Println(p1 == p2) // true
+
+type User struct {
+    Name string `json:"name"`
+    Age  int    `json:"age"`
+}
+| **Tag**    | **Used For**             | **Common Modifiers / Examples**                                                             |
+| ---------- | ------------------------ | ------------------------------------------------------------------------------------------- |
+| `json`     | JSON encode/decode       | `json:"name"`, `json:"age,omitempty"`, `json:"-"`                                           |
+| `yaml`     | YAML parse/write         | `yaml:"port"`, `yaml:"path,omitempty"`, `yaml:"-"`                                          |
+| `form`     | Form binding (e.g., Gin) | `form:"username"`, `form:"password"`                                                        |
+| `db`       | SQL column mapping       | `db:"user_id"`, `db:"product_name"`                                                         |
+| `gorm`     | GORM ORM                 | `gorm:"primaryKey"`, `gorm:"column:user_name"`, `gorm:"unique"`, `gorm:"type:varchar(100)"` |
+| `validate` | Input validation         | `validate:"required"`, `validate:"email"`, `validate:"gte=18,lte=60"`                       |
+| `bson`     | MongoDB (BSON)           | `bson:"_id"`, `bson:"name,omitempty"`, `bson:"-"`                                           |
+| `xml`      | XML marshal/unmarshal    | `xml:"name"`, `xml:"age,attr"`, `xml:"-"`                                                   |
+
+......................................................................
+/* INTERFACE*/
+type geometry interface {
+    area() float64
+    perim() float64
+}
+......................................................................
+/* ENUM */
+const (
+    StateIdle ServerState = iota.  //=1
+    StateConnected.   // 1
+    StateError        // =2
+    StateRetrying      //=3
+)
+ 
+
+......................................................................
+/* CLOSURES  */
+ In Go, a closure is a function value that references variables from outside its body. The function "closes over"
+ those variables and can access and modify them even after the outer function has finished executing.
+
+ 	counter := 0
+	increment := func() int {
+		counter++
+		return counter
+	}
+
+	fmt.Println(increment()) // 1
+	fmt.Println(increment()) // 2
+	fmt.Println(increment()) // 3
+    .............................
+    func adder(x int) func(int) int {
+	return func(y int) int {
+		return x + y
+	}
+}
+
+func main() {
+	add5 := adder(5)
+	fmt.Println(add5(3))  // 8
+	fmt.Println(add5(10)) // 15
+}
+ 
+......................................................................
+/*  GENERICS */
+
+Generics let you write functions or types that work with any data type
+
+[T any] or safe side [T int | float64]
+
+func Sum[T int | float64](a, b T) T { return a + b}
+
+type Box[T any] struct { value T}
+.......................................................................
+/* Range over Iterators */
+
+| Pattern         | Example Usage                      | Notes                         |
+| --------------- | ---------------------------------- | ----------------------------- |
+| `range slice`   | `for i, v := range mySlice`        | Most common                   |
+| `range map`     | `for k, v := range myMap`          | Random key order              |
+| `range string`  | `for i, r := range myString`       | Handles Unicode properly      |
+| `range channel` | `for v := range ch`                | Waits until channel is closed |
+| custom `Next()` | Manual loop `val, ok := it.Next()` | Simulates true iterators      |
+
+......................................................................
+/* ERRORS */
+errors are a core part of the language — instead of exceptions, Go uses explicit error handling via the built-in error type.
+=> By convention, errors are the last return value and have type error, a built-in interface.
+
+import "errors"
+
+func divide(a, b int) (int, error) {
+    if b == 0 {
+        return 0, errors.New("cannot divide by zero")
+    }
+    return a / b, nil
+}
+result, err := divide(10, 0)
+    if err != nil {
+        fmt.Println("Error:", err)
+    } else {
+        fmt.Println("Result:", result)
+    }
+
+
+......................................................................
+/* GOROUTINE*/
+normal go program is synchronous
+A goroutine is a lightweight thread managed by the Go runtime.
+ It allows you to run a function concurrently with other functions.
+goroutine will execute concurrently ( somewhat asynchronous )
+using multithrade
+=> A goroutine is a function that runs concurrently with other goroutines in the same address space,
+
+go function()
+time.Sleep(500 * time.Millisecond). // use in testing only
+......................................................................
+/* CHANNELS */
+Channels are typed conduits/pipeline to send and receive values between goroutines.
+
+ch := make(chan int)  // create a channel
+ch <- 10              // send
+val := <-ch           // receive
+| Type       | Description   |
+| ---------- | ------------- |
+| `chan T`   | Bidirectional |
+| `chan<- T` | Send-only     |
+| `<-chan T` | Receive-only  |
+
+......................................................................
+/* WAITGROUP*/
+Wait for Multiple Goroutines to Finish
+
+var wg sync.WaitGroup
+wg.Add(1)      // increment counter
+go func() {
+    defer wg.Done() // decrement
+    doSomething()
+}()
+wg.Wait()      // blocks until counter = 0
+......................................................................
+/* */
+......................................................................
+/* */
+......................................................................
+/* */
+......................................................................
+/* */
+......................................................................
+/* */
+......................................................................
